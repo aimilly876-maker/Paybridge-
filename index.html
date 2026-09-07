@@ -11,111 +11,111 @@
       padding: 0;
       font-family: Arial, sans-serif;
     }
-body {
-  background: #f5f7fb;
-  color: #172033;
-}
-header {
-  background: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
-  padding: 18px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.logo {
-  font-size: 22px;
-  font-weight: 800;
-}
-nav a {
-  margin-left: 14px;
-  text-decoration: none;
-  color: #172033;
-  font-size: 14px;
-}
-.hero {
-  padding: 70px 22px;
-  text-align: center;
-  background: linear-gradient(135deg, #eef4ff, #ffffff);
-}
-.hero h1 {
-  font-size: 42px;
-  line-height: 1.1;
-  margin-bottom: 18px;
-}
-.hero p {
-  max-width: 600px;
-  margin: 0 auto 28px;
-  color: #5b6475;
-  font-size: 17px;
-  line-height: 1.6;
-}
-.buttons {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-.btn {
-  display: inline-block;
-  padding: 14px 22px;
-  border-radius: 10px;
-  text-decoration: none;
-  font-weight: 700;
-}
-.primary {
-  background: #2563eb;
-  color: white;
-}
-.secondary {
-  background: white;
-  color: #2563eb;
-  border: 1px solid #2563eb;
-}
-.features {
-  padding: 50px 20px;
-  max-width: 1100px;
-  margin: auto;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
-}
-.card {
-  background: white;
-  padding: 25px;
-  border-radius: 15px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.06);
-}
-.card h3 {
-  margin-bottom: 10px;
-}
-.card p {
-  color: #667085;
-  line-height: 1.5;
-}
-footer {
-  text-align: center;
-  padding: 30px 20px;
-  color: #667085;
-  font-size: 14px;
-}
-@media (max-width: 600px) {
-  .hero h1 {
-    font-size: 34px;
-  }
-  nav a {
-    font-size: 12px;
-  }
-}
+    body {
+      background: #f5f7fb;
+      color: #172033;
+    }
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-size: 22px;
+      font-weight: 800;
+    }
+    nav a {
+      margin-left: 14px;
+      text-decoration: none;
+      color: #172033;
+      font-size: 14px;
+    }
+    .hero {
+      padding: 70px 22px;
+      text-align: center;
+      background: linear-gradient(135deg, #eef4ff, #ffffff);
+    }
+    .hero h1 {
+      font-size: 42px;
+      line-height: 1.1;
+      margin-bottom: 18px;
+    }
+    .hero p {
+      max-width: 600px;
+      margin: 0 auto 28px;
+      color: #5b6475;
+      font-size: 17px;
+      line-height: 1.6;
+    }
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-block;
+      padding: 14px 22px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .primary {
+      background: #2563eb;
+      color: white;
+    }
+    .secondary {
+      background: white;
+      color: #2563eb;
+      border: 1px solid #2563eb;
+    }
+    .features {
+      padding: 50px 20px;
+      max-width: 1100px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+    }
+    .card h3 {
+      margin-bottom: 10px;
+    }
+    .card p {
+      color: #667085;
+      line-height: 1.5;
+    }
+    footer {
+      text-align: center;
+      padding: 30px 20px;
+      color: #667085;
+      font-size: 14px;
+    }
+    @media (max-width: 600px) {
+      .hero h1 {
+        font-size: 34px;
+      }
+      nav a {
+        font-size: 12px;
+      }
+    }
   </style>
 </head>
 <body>
 <header>
   <div class="logo">PayFlow</div>
   <nav>
-    <a href="#">Home</a>
-    <a href="#">Features</a>
-    <a href="#">Login</a>
+    <a href="index.html">Home</a>
+    <a href="#features">Features</a>
+    <a href="login.html">Login</a>
   </nav>
 </header>
 <section class="hero">
@@ -125,11 +125,15 @@ footer {
     accept, manage, and track payments from one place.
   </p>
   <div class="buttons">
-    <a href="#" class="btn primary">Get Started</a>
-    <a href="#" class="btn secondary">Learn More</a>
+<a href="signup.html" class="btn primary">
+  Get Started
+</a>
+<a href="#features" class="btn secondary">
+  Learn More
+</a>
   </div>
 </section>
-<section class="features">
+<section class="features" id="features">
   <div class="card">
     <h3>💳 Accept Payments</h3>
     <p>
@@ -139,22 +143,22 @@ footer {
   <div class="card">
     <h3>🔒 Secure</h3>
     <p>
-      Build your payment experience with security and
-      customer protection in mind.
+      Build your payment experience with security
+      and customer protection in mind.
     </p>
   </div>
   <div class="card">
     <h3>📊 Track Transactions</h3>
     <p>
-      Keep your payments organized and monitor your
-      transaction activity.
+      Keep your payments organized and monitor
+      your transaction activity.
     </p>
   </div>
   <div class="card">
     <h3>⚡ Fast & Simple</h3>
     <p>
-      Create a smooth payment experience for you and
-      your customers.
+      Create a smooth payment experience for you
+      and your customers.
     </p>
   </div>
 </section>
