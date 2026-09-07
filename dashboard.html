@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PayFlow — Dashboard</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      background: #f5f7fb;
+      color: #172033;
+    }
+    header {
+      background: white;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-size: 22px;
+      font-weight: 800;
+    }
+    .logout {
+      color: #667085;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    main {
+      max-width: 1100px;
+      margin: auto;
+      padding: 25px 18px 50px;
+    }
+    .welcome {
+      margin-bottom: 25px;
+    }
+    .welcome h1 {
+      font-size: 28px;
+      margin-bottom: 7px;
+    }
+    .welcome p {
+      color: #667085;
+    }
+    .balance {
+      background: #2563eb;
+      color: white;
+      border-radius: 18px;
+      padding: 25px;
+      margin-bottom: 22px;
+    }
+    .balance-label {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    .amount {
+      font-size: 38px;
+      font-weight: 800;
+      margin: 8px 0 20px;
+    }
+    .balance button {
+      border: none;
+      padding: 12px 18px;
+      border-radius: 9px;
+      background: white;
+      color: #2563eb;
+      font-weight: 700;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 25px;
+    }
+    .card {
+      background: white;
+      border-radius: 15px;
+      padding: 22px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+    }
+    .card-title {
+      color: #667085;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+    .card-value {
+      font-size: 25px;
+      font-weight: 800;
+    }
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .action {
+      background: white;
+      border: 1px solid #e5e7eb;
+      padding: 18px;
+      border-radius: 12px;
+      text-decoration: none;
+      color: #172033;
+      font-weight: 700;
+      text-align: center;
+    }
+    .transactions {
+      background: white;
+      border-radius: 15px;
+      padding: 22px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+    }
+    .transactions h2 {
+      margin-bottom: 18px;
+      font-size: 20px;
+    }
+    .transaction {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .transaction:last-child {
+      border-bottom: none;
+    }
+    .transaction-name {
+      font-weight: 700;
+    }
+    .transaction-date {
+      color: #667085;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+    .credit {
+      font-weight: 700;
+    }
+    footer {
+      text-align: center;
+      color: #667085;
+      padding: 25px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="logo">PayFlow</div>
+  <a href="index.html" class="logout">Log out</a>
+</header>
+<main>
+  <section class="welcome">
+    <h1>Welcome to your dashboard</h1>
+    <p>Manage your payments and account activity.</p>
+  </section>
+  <section class="balance">
+    <div class="balance-label">Available balance</div>
+    <div class="amount">$0.00</div>
+    <button onclick="alert('Payment processing will be connected later.')">
+      Accept Payment
+    </button>
+  </section>
+  <section class="cards">
+<div class="card">
+  <div class="card-title">Total received</div>
+  <div class="card-value">$0.00</div>
+</div>
+<div class="card">
+  <div class="card-title">Transactions</div>
+  <div class="card-value">0</div>
+</div>
+<div class="card">
+  <div class="card-title">Pending</div>
+  <div class="card-value">$0.00</div>
+</div>
+  </section>
+  <section class="actions">
+<a href="#" class="action"
+   onclick="alert('Payment links will be added next.')">
+  💳 Payment Links
+</a>
+<a href="#" class="action"
+   onclick="alert('Invoices will be added next.')">
+  🧾 Invoices
+</a>
+<a href="#" class="action"
+   onclick="alert('Payouts will be connected later.')">
+  💰 Payouts
+</a>
+<a href="#" class="action"
+   onclick="alert('Account settings will be added next.')">
+  ⚙️ Settings
+</a>
+  </section>
+  <section class="transactions">
+<h2>Recent transactions</h2>
+<div class="transaction">
+  <div>
+    <div class="transaction-name">No transactions yet</div>
+    <div class="transaction-date">
+      Your recent payments will appear here.
+    </div>
+  </div>
+  <div class="credit">$0.00</div>
+</div>
+  </section>
+</main>
+<footer>
+  © 2026 PayFlow. All rights reserved.
+</footer>
+</body>
+</html>
