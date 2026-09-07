@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PayFlow — Create Account</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      min-height: 100vh;
+      background: #f5f7fb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      width: 100%;
+      max-width: 440px;
+    }
+    .logo {
+      text-align: center;
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 25px;
+    }
+    .card {
+      background: white;
+      padding: 30px 25px;
+      border-radius: 18px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    }
+    h1 {
+      font-size: 25px;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: #667085;
+      line-height: 1.5;
+      margin-bottom: 22px;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin: 15px 0 7px;
+    }
+    input {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #d0d5dd;
+      border-radius: 9px;
+      font-size: 16px;
+      outline: none;
+    }
+    input:focus {
+      border-color: #2563eb;
+    }
+    .check {
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+      margin-top: 18px;
+      font-size: 13px;
+      color: #667085;
+      line-height: 1.4;
+    }
+    .check input {
+      width: auto;
+      margin-top: 3px;
+    }
+    button {
+      width: 100%;
+      margin-top: 22px;
+      padding: 15px;
+      border: none;
+      border-radius: 9px;
+      background: #2563eb;
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .login {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+    a {
+      color: #2563eb;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 18px;
+      color: #667085;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+<div class="logo">PayFlow</div>
+<div class="card">
+  <h1>Create your account</h1>
+  <p class="subtitle">
+    Get started with PayFlow and manage your payments in one place.
+  </p>
+  <form onsubmit="createAccount(event)">
+    <label for="name">Full name</label>
+    <input
+      type="text"
+      id="name"
+      placeholder="Your full name"
+      required
+    >
+    <label for="email">Email address</label>
+    <input
+      type="email"
+      id="email"
+      placeholder="you@example.com"
+      required
+    >
+    <label for="password">Password</label>
+    <input
+      type="password"
+      id="password"
+      placeholder="Create a password"
+      minlength="8"
+      required
+    >
+    <label for="confirm">Confirm password</label>
+    <input
+      type="password"
+      id="confirm"
+      placeholder="Confirm your password"
+      minlength="8"
+      required
+    >
+    <label class="check">
+      <input type="checkbox" id="terms" required>
+      <span>
+        I agree to the PayFlow Terms of Service and Privacy Policy.
+      </span>
+    </label>
+    <button type="submit">
+      Create Account
+    </button>
+  </form>
+  <div class="login">
+    Already have an account?
+    <a href="login.html">Sign in</a>
+  </div>
+  <a href="index.html" class="back">
+    ← Back to home
+  </a>
+</div>
+  </div>
+  <script>
+    function createAccount(event) {
+      event.preventDefault();
+      const password = document.getElementById("password").value;
+      const confirm = document.getElementById("confirm").value;
+      if (password !== confirm) {
+        alert("Passwords do not match.");
+        return;
+      }
+      alert(
+        "Account creation is not connected to a real authentication system yet. We will connect secure authentication next."
+      );
+    }
+  </script>
+</body>
+</html>
