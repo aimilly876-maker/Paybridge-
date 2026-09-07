@@ -3,178 +3,191 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PayFlow — Create Account</title>
+  <title>PayFlow - Create Account</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-    }
     body {
-      min-height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
       background: #f5f7fb;
       display: flex;
-      align-items: center;
       justify-content: center;
-      padding: 20px;
+      align-items: center;
+      min-height: 100vh;
     }
+
     .container {
-      width: 100%;
-      max-width: 440px;
-    }
-    .logo {
-      text-align: center;
-      font-size: 28px;
-      font-weight: 800;
-      margin-bottom: 25px;
-    }
-    .card {
       background: white;
-      padding: 30px 25px;
-      border-radius: 18px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      width: 90%;
+      max-width: 420px;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.1);
     }
+
     h1 {
-      font-size: 25px;
-      margin-bottom: 8px;
+      text-align: center;
+      color: #111827;
     }
-    .subtitle {
-      color: #667085;
-      line-height: 1.5;
-      margin-bottom: 22px;
+
+    p {
+      text-align: center;
+      color: #6b7280;
     }
-    label {
-      display: block;
-      font-weight: 600;
-      margin: 15px 0 7px;
-    }
+
     input {
       width: 100%;
-      padding: 14px;
-      border: 1px solid #d0d5dd;
-      border-radius: 9px;
+      padding: 13px;
+      margin: 8px 0;
+      box-sizing: border-box;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
       font-size: 16px;
-      outline: none;
     }
-    input:focus {
-      border-color: #2563eb;
-    }
-    .check {
-      display: flex;
-      gap: 9px;
-      align-items: flex-start;
-      margin-top: 18px;
-      font-size: 13px;
-      color: #667085;
-      line-height: 1.4;
-    }
-    .check input {
-      width: auto;
-      margin-top: 3px;
-    }
+
     button {
       width: 100%;
-      margin-top: 22px;
-      padding: 15px;
+      padding: 14px;
+      margin-top: 12px;
       border: none;
-      border-radius: 9px;
-      background: #2563eb;
+      border-radius: 8px;
+      background: #111827;
       color: white;
       font-size: 16px;
-      font-weight: 700;
       cursor: pointer;
     }
-    .login {
+
+    button:disabled {
+      opacity: 0.6;
+    }
+
+    .message {
       text-align: center;
-      margin-top: 20px;
+      margin-top: 15px;
       font-size: 14px;
     }
+
     a {
-      color: #2563eb;
-      text-decoration: none;
-      font-weight: 600;
-    }
-    .back {
       display: block;
       text-align: center;
-      margin-top: 18px;
-      color: #667085;
-      font-size: 14px;
+      margin-top: 20px;
+      color: #111827;
     }
   </style>
 </head>
+
 <body>
+
   <div class="container">
-<div class="logo">PayFlow</div>
-<div class="card">
-  <h1>Create your account</h1>
-  <p class="subtitle">
-    Get started with PayFlow and manage your payments in one place.
-  </p>
-  <form onsubmit="createAccount(event)">
-    <label for="name">Full name</label>
-    <input
-      type="text"
-      id="name"
-      placeholder="Your full name"
-      required
-    >
-    <label for="email">Email address</label>
-    <input
-      type="email"
-      id="email"
-      placeholder="you@example.com"
-      required
-    >
-    <label for="password">Password</label>
-    <input
-      type="password"
-      id="password"
-      placeholder="Create a password"
-      minlength="8"
-      required
-    >
-    <label for="confirm">Confirm password</label>
-    <input
-      type="password"
-      id="confirm"
-      placeholder="Confirm your password"
-      minlength="8"
-      required
-    >
-    <label class="check">
-      <input type="checkbox" id="terms" required>
-      <span>
-        I agree to the PayFlow Terms of Service and Privacy Policy.
-      </span>
-    </label>
-    <button type="submit">
-      Create Account
-    </button>
-  </form>
-  <div class="login">
-    Already have an account?
-    <a href="login.html">Sign in</a>
+    <h1>Create your PayFlow account</h1>
+    <p>For merchants and customers who want a PayFlow account.</p>
+
+    <form id="signupForm">
+
+      <input
+        type="text"
+        id="fullName"
+        placeholder="Full Name"
+        required
+      >
+
+      <input
+        type="email"
+        id="email"
+        placeholder="Email Address"
+        required
+      >
+
+      <input
+        type="password"
+        id="password"
+        placeholder="Password"
+        minlength="6"
+        required
+      >
+
+      <input
+        type="password"
+        id="confirmPassword"
+        placeholder="Confirm Password"
+        minlength="6"
+        required
+      >
+
+      <button type="submit" id="signupButton">
+        Create Account
+      </button>
+
+      <div class="message" id="message"></div>
+
+    </form>
+
+    <a href="login.html">Already have an account? Log in</a>
+    <a href="index.html">Back to PayFlow</a>
   </div>
-  <a href="index.html" class="back">
-    ← Back to home
-  </a>
-</div>
-  </div>
+
   <script>
-    function createAccount(event) {
+    const SUPABASE_URL = "https://qfmczhdnmbntjfioyzjc.supabase.co";
+
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_vyPMYAngU34c2YHkTjt_ZA_MVet1HmZ";
+
+    const { createClient } = supabase;
+
+    const supabaseClient = createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
+
+    const form = document.getElementById("signupForm");
+    const button = document.getElementById("signupButton");
+    const message = document.getElementById("message");
+
+    form.addEventListener("submit", async function(event) {
       event.preventDefault();
+
+      const fullName = document.getElementById("fullName").value.trim();
+      const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value;
-      const confirm = document.getElementById("confirm").value;
-      if (password !== confirm) {
-        alert("Passwords do not match.");
+      const confirmPassword = document.getElementById("confirmPassword").value;
+
+      if (password !== confirmPassword) {
+        message.textContent = "Passwords do not match.";
         return;
       }
-      alert(
-        "Account creation is not connected to a real authentication system yet. We will connect secure authentication next."
-      );
-    }
+
+      button.disabled = true;
+      button.textContent = "Creating account...";
+      message.textContent = "";
+
+      const { data, error } = await supabaseClient.auth.signUp({
+        email: email,
+        password: password,
+        options: {
+          data: {
+            full_name: fullName
+          }
+        }
+      });
+
+      if (error) {
+        message.textContent = error.message;
+        button.disabled = false;
+        button.textContent = "Create Account";
+        return;
+      }
+
+      if (data.user) {
+        message.textContent =
+          "Account created! Check your email to confirm your account.";
+
+        form.reset();
+        button.disabled = false;
+        button.textContent = "Create Account";
+      }
+    });
   </script>
+
 </body>
 </html>
