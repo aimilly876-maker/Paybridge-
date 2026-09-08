@@ -286,9 +286,7 @@ textarea {
 
   <div class="actions">
 
-    <button
-      class="action"
-      onclick="showCreateLink()">
+    <button class="action" onclick="showCreateLink()">
       🔗 Create Payment Link
     </button>
 
@@ -316,7 +314,8 @@ textarea {
         type="text"
         id="title"
         placeholder="Payment title"
-        required>
+        required
+      >
 
       <input
         type="number"
@@ -324,31 +323,28 @@ textarea {
         placeholder="Amount"
         step="0.01"
         min="0.01"
-        required>
+        required
+      >
 
       <textarea
         id="description"
-        placeholder="Description (optional)">
-      </textarea>
+        placeholder="Description (optional)"
+      ></textarea>
 
       <input
         type="text"
         id="slug"
         placeholder="Custom link name e.g. consultation"
-        required>
+        required
+      >
 
-      <button
-        class="primary"
-        type="submit">
+      <button class="primary" type="submit">
         Create Payment Link
       </button>
 
     </form>
 
-    <div
-      class="message"
-      id="formMessage">
-    </div>
+    <div class="message" id="formMessage"></div>
 
   </div>
 
@@ -381,18 +377,20 @@ textarea {
 <script>
 
 const SUPABASE_URL =
-"https://qfmczhdnmbntjfioyzjc.supabase.co";
+  "https://qfmczhdnmbntjfioyzjc.supabase.co";
 
 const SUPABASE_PUBLISHABLE_KEY =
-"sb_publishable_vyPMYAngU34c2YHkTjt_ZA_MVet1HmZ";
+  "sb_publishable_vyPMYAngU34c2YHkTjt_ZA_MVet1HmZ";
 
-const supabaseClient =
-supabase.createClient(
+const supabaseClient = supabase.createClient(
   SUPABASE_URL,
   SUPABASE_PUBLISHABLE_KEY
 );
 
 let currentUser = null;
+
+
+/* CHECK USER */
 
 async function checkUser() {
 
@@ -400,9 +398,7 @@ async function checkUser() {
     await supabaseClient.auth.getUser();
 
   if (error || !data.user) {
-
-    window.location.href = "login.html";
-
+    window.location.href = "Login.html";
     return;
   }
 
@@ -412,9 +408,11 @@ async function checkUser() {
     currentUser.email;
 
   await loadPaymentLinks();
-
   await loadPayments();
 }
+
+
+/* LOAD PAYMENT LINKS */
 
 async function loadPaymentLinks() {
 
@@ -423,9 +421,7 @@ async function loadPaymentLinks() {
       .from("payment_links")
       .select("*")
       .eq("user_id", currentUser.id)
-      .order("created_at", {
-        ascending: false
-      });
+      .order("created_at", { ascending: false });
 
   const list =
     document.getElementById("linksList");
@@ -438,7 +434,6 @@ async function loadPaymentLinks() {
       </div>`;
 
     console.error(error);
-
     return;
   }
 
@@ -455,6 +450,8 @@ async function loadPaymentLinks() {
   list.innerHTML = "";
 
   data.forEach(link => {
+
+    /* CORRECT PAYMENT PAGE URL */
 
     const publicUrl =
       window.location.origin +
@@ -499,8 +496,12 @@ async function loadPaymentLinks() {
     `;
 
     list.appendChild(item);
+
   });
 }
+
+
+/* LOAD PAYMENTS */
 
 async function loadPayments() {
 
@@ -509,33 +510,24 @@ async function loadPayments() {
       .from("payments")
       .select("*")
       .eq("user_id", currentUser.id)
-      .order("created_at", {
-        ascending: false
-      });
+      .order("created_at", { ascending: false });
 
   if (error) {
-
     console.error(error);
-
     return;
   }
 
   let received = 0;
-
   let pending = 0;
 
   data.forEach(payment => {
 
     if (payment.status === "paid") {
-
       received += Number(payment.amount);
-
     }
 
     if (payment.status === "pending") {
-
       pending += Number(payment.amount);
-
     }
 
   });
@@ -603,6 +595,9 @@ async function loadPayments() {
   });
 }
 
+
+/* CREATE PAYMENT LINK */
+
 document
   .getElementById("linkForm")
   .addEventListener("submit", async function(event) {
@@ -611,8 +606,8 @@ document
 
     const title =
       document.getElementById("title")
-      .value
-      .trim();
+        .value
+        .trim();
 
     const amount =
       Number(
@@ -621,16 +616,16 @@ document
 
     const description =
       document.getElementById("description")
-      .value
-      .trim();
+        .value
+        .trim();
 
     const slug =
       document.getElementById("slug")
-      .value
-      .trim()
-      .toLowerCase()
-      .replace(/[^a-z0-9-]/g, "-")
-      .replace(/-+/g, "-");
+        .value
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9-]/g, "-")
+        .replace(/-+/g, "-");
 
     const message =
       document.getElementById("formMessage");
@@ -644,15 +639,10 @@ document
         .insert({
 
           title: title,
-
           amount: amount,
-
           description: description,
-
           user_id: currentUser.id,
-
           active: true,
-
           slug: slug
 
         });
@@ -685,6 +675,9 @@ document
 
   });
 
+
+/* COPY LINK */
+
 async function copyLink(encodedUrl) {
 
   const url =
@@ -702,6 +695,9 @@ async function copyLink(encodedUrl) {
 
   }
 }
+
+
+/* DELETE LINK */
 
 async function deleteLink(id) {
 
@@ -727,8 +723,10 @@ async function deleteLink(id) {
   }
 
   await loadPaymentLinks();
-
 }
+
+
+/* CREATE LINK BUTTON */
 
 function showCreateLink() {
 
@@ -740,13 +738,18 @@ function showCreateLink() {
 
 }
 
+
+/* LOGOUT */
+
 async function logout() {
 
   await supabaseClient.auth.signOut();
 
-  window.location.href = "login.html";
-
+  window.location.href = "Login.html";
 }
+
+
+/* SECURITY */
 
 function escapeHtml(value) {
 
@@ -758,6 +761,9 @@ function escapeHtml(value) {
     .replace(/'/g, "&#039;");
 
 }
+
+
+/* START */
 
 checkUser();
 
