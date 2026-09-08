@@ -32,16 +32,17 @@ body {
 
 .brand {
   text-align: center;
-  font-size: 29px;
+  font-size: 30px;
   font-weight: bold;
   margin-bottom: 20px;
+  letter-spacing: -1px;
 }
 
 .card {
   background: white;
-  border-radius: 18px;
+  border-radius: 20px;
   padding: 28px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+  box-shadow: 0 10px 35px rgba(0,0,0,0.08);
 }
 
 .secure {
@@ -65,7 +66,7 @@ body {
 
 .summary {
   background: #f3f4f6;
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 18px;
   margin-bottom: 22px;
 }
@@ -101,11 +102,86 @@ input {
   border-radius: 9px;
   font-size: 15px;
   margin-bottom: 16px;
+  background: white;
 }
 
 input:focus {
   outline: none;
   border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.08);
+}
+
+/* PAYMENT LOGOS */
+
+.payment-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.payment-icon {
+  min-width: 62px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 9px;
+
+  background: #ffffff;
+
+  font-size: 10px;
+  font-weight: bold;
+
+  box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+
+  transition: all 0.2s ease;
+}
+
+.payment-icon:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 18px rgba(37,99,235,0.15);
+}
+
+/* VISA */
+
+.visa {
+  color: #1a1f71;
+  font-size: 16px;
+  font-style: italic;
+}
+
+/* MASTERCARD */
+
+.mastercard {
+  color: #111827;
+  font-size: 9px;
+}
+
+/* AMERICAN EXPRESS */
+
+.amex {
+  color: #006fcf;
+  font-size: 8px;
+  text-align: center;
+  line-height: 9px;
+}
+
+/* APPLE PAY */
+
+.apple {
+  color: #111827;
+  font-size: 12px;
+}
+
+/* GOOGLE PAY */
+
+.google {
+  color: #4285f4;
+  font-size: 10px;
 }
 
 .card-row {
@@ -117,37 +193,37 @@ input:focus {
   flex: 1;
 }
 
-.payment-icons {
-  display: flex;
-  gap: 7px;
-  margin-bottom: 18px;
-}
-
-.payment-icon {
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  padding: 6px 9px;
-  font-size: 11px;
-  font-weight: bold;
-  background: white;
-}
-
 .pay-button {
   width: 100%;
   padding: 15px;
+
   background: #2563eb;
   color: white;
+
   border: none;
   border-radius: 9px;
+
   font-size: 16px;
   font-weight: bold;
+
   cursor: pointer;
+
   margin-top: 6px;
+
+  box-shadow: 0 5px 14px rgba(37,99,235,0.18);
+
+  transition: all 0.2s ease;
+}
+
+.pay-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 7px 18px rgba(37,99,235,0.25);
 }
 
 .pay-button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  transform: none;
 }
 
 .message {
@@ -233,11 +309,28 @@ input:focus {
     </div>
 
     <div class="payment-icons">
-      <div class="payment-icon">VISA</div>
-      <div class="payment-icon">MC</div>
-      <div class="payment-icon">AMEX</div>
-      <div class="payment-icon">APPLE PAY</div>
-      <div class="payment-icon">G PAY</div>
+
+      <div class="payment-icon visa">
+        VISA
+      </div>
+
+      <div class="payment-icon mastercard">
+        ●● MASTERCARD
+      </div>
+
+      <div class="payment-icon amex">
+        AMERICAN<br>
+        EXPRESS
+      </div>
+
+      <div class="payment-icon apple">
+         Pay
+      </div>
+
+      <div class="payment-icon google">
+        G Pay
+      </div>
+
     </div>
 
     <label for="cardName">
@@ -248,7 +341,7 @@ input:focus {
       type="text"
       id="cardName"
       placeholder="Name on card"
-      autocomplete="cc-name"
+      autocomplete="off"
     >
 
     <label for="cardNumber">
@@ -267,6 +360,7 @@ input:focus {
     <div class="card-row">
 
       <div>
+
         <label for="expiry">
           Expiration
         </label>
@@ -279,9 +373,11 @@ input:focus {
           autocomplete="off"
           maxlength="5"
         >
+
       </div>
 
       <div>
+
         <label for="cvv">
           CVV
         </label>
@@ -294,6 +390,7 @@ input:focus {
           autocomplete="off"
           maxlength="4"
         >
+
       </div>
 
     </div>
@@ -306,9 +403,7 @@ input:focus {
       Pay Now
     </button>
 
-    <div
-      class="notice"
-    >
+    <div class="notice">
       This is a payment interface preview.
       Card information is not processed or stored yet.
     </div>
@@ -465,9 +560,8 @@ async function continuePayment() {
 
 
   /*
-    IMPORTANT:
-    Card details are NOT sent to Supabase.
-    They are only used for this interface preview.
+    Card information is NOT
+    sent to Supabase.
   */
 
   const { data, error } =
