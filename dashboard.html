@@ -1,1276 +1,835 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PayFlow Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <title>PayFlow Dashboard</title>
 
-<style>
-* {
-  box-sizing: border-box;
-}
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f5f7fb;
-  color: #111827;
-}
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-header {
-  background: #111827;
-  color: white;
-  padding: 18px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      color: #222;
+    }
 
-.logo {
-  font-size: 22px;
-  font-weight: bold;
-}
+    header {
+      background: #111827;
+      color: white;
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-.logout {
-  background: #ef4444;
-  color: white;
-  border: none;
-  padding: 10px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-}
+    header h1 {
+      font-size: 22px;
+    }
 
-.container {
-  max-width: 1100px;
-  margin: auto;
-  padding: 25px 18px;
-}
+    header button {
+      background: #ef4444;
+      border: none;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 7px;
+      cursor: pointer;
+    }
 
-.welcome {
-  margin-bottom: 25px;
-}
+    .container {
+      max-width: 1000px;
+      margin: 25px auto;
+      padding: 0 15px;
+    }
 
-.welcome h1 {
-  margin-bottom: 6px;
-}
+    .welcome {
+      margin-bottom: 20px;
+    }
 
-.email {
-  color: #6b7280;
-  font-size: 14px;
-}
+    .welcome h2 {
+      margin-bottom: 6px;
+    }
 
-.cards {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 15px;
-  margin-bottom: 25px;
-}
+    .card {
+      background: white;
+      padding: 22px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
 
-.card {
-  background: white;
-  padding: 20px;
-  border-radius: 14px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-}
+    .balance-card {
+      background: #111827;
+      color: white;
+    }
 
-.card h3 {
-  margin: 0 0 10px;
-  color: #6b7280;
-  font-size: 14px;
-}
+    .balance-label {
+      font-size: 14px;
+      opacity: 0.8;
+      margin-bottom: 8px;
+    }
 
-.amount {
-  font-size: 25px;
-  font-weight: bold;
-}
+    .amount {
+      font-size: 34px;
+      font-weight: bold;
+    }
 
-.actions {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 15px;
-  margin-bottom: 25px;
-}
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
 
-.action {
-  background: #111827;
-  color: white;
-  border: none;
-  padding: 17px;
-  border-radius: 12px;
-  font-size: 15px;
-  cursor: pointer;
-}
+    input,
+    select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 7px;
+      margin-bottom: 15px;
+      border: 1px solid #d1d5db;
+      border-radius: 7px;
+      font-size: 15px;
+    }
 
-.section {
-  background: white;
-  padding: 20px;
-  border-radius: 14px;
-  margin-bottom: 25px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-}
+    label {
+      font-size: 14px;
+      font-weight: bold;
+    }
 
-.section h2 {
-  margin-top: 0;
-}
+    button.primary {
+      width: 100%;
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 13px;
+      border-radius: 7px;
+      font-size: 15px;
+      cursor: pointer;
+    }
 
-form {
-  display: grid;
-  gap: 12px;
-}
+    button.primary:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
 
-input,
-textarea,
-select {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 15px;
-  background: white;
-}
+    .withdraw-info {
+      background: #f3f4f6;
+      padding: 12px;
+      border-radius: 7px;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
 
-textarea {
-  min-height: 80px;
-  resize: vertical;
-}
+    .message {
+      padding: 12px;
+      border-radius: 7px;
+      margin-top: 12px;
+      display: none;
+    }
 
-.primary {
-  background: #2563eb;
-  color: white;
-  border: none;
-  padding: 13px;
-  border-radius: 8px;
-  font-size: 15px;
-  cursor: pointer;
-}
+    .success {
+      background: #dcfce7;
+      color: #166534;
+    }
 
-.withdraw-button {
-  background: #16a34a;
-  color: white;
-  border: none;
-  padding: 13px;
-  border-radius: 8px;
-  font-size: 15px;
-  cursor: pointer;
-}
+    .error {
+      background: #fee2e2;
+      color: #991b1b;
+    }
 
-.withdraw-button:disabled,
-.primary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
+    .transaction {
+      padding: 13px 0;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
 
-.message {
-  margin-top: 12px;
-  font-size: 14px;
-  line-height: 1.5;
-}
+    .transaction:last-child {
+      border-bottom: none;
+    }
 
-.success {
-  color: #16a34a;
-}
+    .status {
+      font-size: 13px;
+      text-transform: capitalize;
+      font-weight: bold;
+    }
 
-.error {
-  color: #dc2626;
-}
+    .empty {
+      color: #6b7280;
+      padding: 10px 0;
+    }
 
-.info-box {
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  color: #1e40af;
-  padding: 14px;
-  border-radius: 9px;
-  margin-bottom: 15px;
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-.withdraw-info {
-  background: #f3f4f6;
-  padding: 14px;
-  border-radius: 9px;
-  margin-bottom: 15px;
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-.link-item {
-  border: 1px solid #e5e7eb;
-  padding: 15px;
-  border-radius: 10px;
-  margin-top: 12px;
-}
-
-.link-title {
-  font-weight: bold;
-  font-size: 17px;
-}
-
-.link-url {
-  background: #f3f4f6;
-  padding: 10px;
-  border-radius: 7px;
-  margin: 10px 0;
-  word-break: break-all;
-  font-size: 13px;
-}
-
-.link-buttons {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.small-btn {
-  border: none;
-  padding: 9px 12px;
-  border-radius: 7px;
-  cursor: pointer;
-}
-
-.copy {
-  background: #2563eb;
-  color: white;
-}
-
-.delete {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-.empty {
-  color: #6b7280;
-  padding: 10px 0;
-}
-
-.transaction {
-  padding: 15px 0;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.status {
-  font-weight: bold;
-}
-
-.paid,
-.completed {
-  color: #16a34a;
-}
-
-.pending,
-.processing {
-  color: #d97706;
-}
-
-.failed,
-.cancelled {
-  color: #dc2626;
-}
-
-.paid-button {
-  background: #16a34a;
-  color: white;
-  border: none;
-  padding: 9px 12px;
-  border-radius: 7px;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-@media (max-width: 800px) {
-  .cards {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .actions {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 500px) {
-  .cards {
-    grid-template-columns: 1fr;
-  }
-
-  .actions {
-    grid-template-columns: 1fr;
-  }
-
-  header {
-    padding: 15px;
-  }
-
-  .container {
-    padding: 20px 12px;
-  }
-}
-</style>
+    .small {
+      font-size: 13px;
+      color: #6b7280;
+    }
+  </style>
 </head>
 
 <body>
 
 <header>
-  <div class="logo">PayFlow</div>
-  <button class="logout" onclick="logout()">Logout</button>
+  <h1>PayFlow</h1>
+  <button onclick="logout()">Logout</button>
 </header>
 
 <div class="container">
 
   <div class="welcome">
-    <h1>Dashboard</h1>
-    <div class="email" id="userEmail">Loading account...</div>
+    <h2>Dashboard</h2>
+    <p>Welcome, <span id="userEmail">Loading...</span></p>
   </div>
 
-  <div class="cards">
-
-    <div class="card">
-      <h3>Available Balance</h3>
-      <div class="amount" id="balance">$0.00</div>
-    </div>
-
-    <div class="card">
-      <h3>Total Received</h3>
-      <div class="amount" id="totalReceived">$0.00</div>
-    </div>
-
-    <div class="card">
-      <h3>Pending</h3>
-      <div class="amount" id="pending">$0.00</div>
-    </div>
-
-    <div class="card">
-      <h3>Transactions</h3>
-      <div class="amount" id="transactionCount">0</div>
-    </div>
-
+  <!-- BALANCE -->
+  <div class="card balance-card">
+    <div class="balance-label">Available USDC Balance</div>
+    <div class="amount" id="balance">0.00 USDC</div>
   </div>
 
-  <div class="actions">
+  <div class="grid">
 
-    <button class="action" onclick="showCreateLink()">
-      🔗 Create Payment Link
-    </button>
+    <!-- WITHDRAW -->
+    <div class="card">
+      <h3>Withdraw USDC</h3>
 
-    <button
-      class="action"
-      onclick="document.getElementById('linksSection').scrollIntoView({behavior:'smooth'})">
-      📋 Payment Links
-    </button>
+      <br>
 
-    <button
-      class="action"
-      onclick="document.getElementById('transactionsSection').scrollIntoView({behavior:'smooth'})">
-      💳 Transactions
-    </button>
+      <div class="withdraw-info">
+        Available to withdraw:
+        <strong id="withdrawBalance">0.00 USDC</strong>
+      </div>
 
-    <button
-      class="action"
-      onclick="document.getElementById('withdrawSection').scrollIntoView({behavior:'smooth'})">
-      💸 Withdraw
-    </button>
+      <form id="withdrawForm">
 
-  </div>
+        <label for="withdrawMethod">
+          Withdrawal Method
+        </label>
 
-  <!-- WITHDRAW -->
+        <select id="withdrawMethod" required>
+          <option value="">Select withdrawal method</option>
+          <option value="crypto">
+            USDC — Ethereum (ERC-20)
+          </option>
+          <option value="bank">
+            Bank — Coming Soon
+          </option>
+        </select>
 
-  <div class="section" id="withdrawSection">
+        <label for="withdrawAmount">
+          Amount (USDC)
+        </label>
 
-    <h2>Withdraw Funds</h2>
+        <input
+          type="number"
+          id="withdrawAmount"
+          step="0.01"
+          min="0.01"
+          placeholder="Enter USDC amount"
+          required
+        >
 
-    <div class="withdraw-info">
-      Available to withdraw:
-      <strong id="withdrawBalance">$0.00</strong>
-    </div>
-
-    <div class="info-box">
-      🪙 <strong>USDC on Ethereum</strong><br>
-      Your crypto withdrawal will be configured for
-      USDC using the Ethereum (ERC-20) network.
-    </div>
-
-    <form id="withdrawForm">
-
-      <label>Withdrawal Method</label>
-
-      <select id="withdrawMethod" required>
-        <option value="">Select withdrawal method</option>
-        <option value="crypto">USDC — Ethereum (ERC-20)</option>
-        <option value="bank">Bank — Coming Soon</option>
-      </select>
-
-      <label>Amount (USD)</label>
-
-      <input
-        type="number"
-        id="withdrawAmount"
-        placeholder="Amount"
-        step="0.01"
-        min="0.01"
-        required
-      >
-
-      <div id="cryptoFields">
-
-        <label>USDC Wallet Address</label>
+        <label for="destinationAddress">
+          USDC Destination Address
+        </label>
 
         <input
           type="text"
           id="destinationAddress"
-          placeholder="Enter Ethereum wallet address"
+          placeholder="0x..."
           autocomplete="off"
+          required
         >
 
-        <label>Network</label>
+        <button
+          type="submit"
+          class="primary"
+          id="withdrawButton"
+        >
+          Request USDC Withdrawal
+        </button>
 
-        <select id="network">
-          <option value="ethereum">Ethereum (ERC-20)</option>
-        </select>
+        <div
+          id="withdrawMessage"
+          class="message"
+        ></div>
 
-      </div>
+      </form>
+    </div>
 
-      <button
-        class="withdraw-button"
-        id="withdrawSubmit"
-        type="submit">
-        Request USDC Withdrawal
-      </button>
+    <!-- PAYMENT LINKS -->
+    <div class="card">
+      <h3>Payment Links</h3>
 
-    </form>
+      <br>
 
-    <div class="message" id="withdrawMessage"></div>
-
-  </div>
-
-  <!-- CREATE PAYMENT LINK -->
-
-  <div class="section" id="createSection">
-
-    <h2>Create Payment Link</h2>
-
-    <form id="linkForm">
-
-      <input
-        type="text"
-        id="title"
-        placeholder="Payment title"
-        required
-      >
-
-      <input
-        type="number"
-        id="amount"
-        placeholder="Amount"
-        step="0.01"
-        min="0.01"
-        required
-      >
-
-      <textarea
-        id="description"
-        placeholder="Description (optional)"
-      ></textarea>
-
-      <input
-        type="text"
-        id="slug"
-        placeholder="Custom link name e.g. consultation"
-        required
-      >
-
-      <button class="primary" type="submit">
-        Create Payment Link
-      </button>
-
-    </form>
-
-    <div class="message" id="formMessage"></div>
-
-  </div>
-
-  <!-- PAYMENT LINKS -->
-
-  <div class="section" id="linksSection">
-
-    <h2>Payment Links</h2>
-
-    <div id="linksList">
-      <div class="empty">
-        Loading payment links...
+      <div id="paymentLinks">
+        <p class="empty">Loading payment links...</p>
       </div>
     </div>
 
   </div>
 
-  <!-- TRANSACTIONS -->
+  <!-- RECENT TRANSACTIONS -->
+  <div class="card">
+    <h3>Recent Transactions</h3>
 
-  <div class="section" id="transactionsSection">
+    <br>
 
-    <h2>Recent Transactions</h2>
-
-    <div id="transactionsList">
-      <div class="empty">
-        Loading transactions...
-      </div>
+    <div id="transactions">
+      <p class="empty">Loading transactions...</p>
     </div>
-
   </div>
 
   <!-- WITHDRAWAL HISTORY -->
+  <div class="card">
+    <h3>Withdrawal History</h3>
 
-  <div class="section">
+    <br>
 
-    <h2>Withdrawal History</h2>
-
-    <div id="withdrawalsList">
-      <div class="empty">
-        Loading withdrawals...
-      </div>
+    <div id="withdrawals">
+      <p class="empty">Loading withdrawals...</p>
     </div>
-
   </div>
 
 </div>
 
 <script>
 
-const SUPABASE_URL =
-  "https://qfmczhdnmbntjfioyzjc.supabase.co";
+  const SUPABASE_URL =
+    "https://qfmczhdnmbntjfioyzjc.supabase.co";
 
-const SUPABASE_PUBLISHABLE_KEY =
-  "sb_publishable_vyPMYAngU34c2YHkTjt_ZA_MVet1HmZ";
+  const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_vyPMYAngU34c2YHkTjt_ZA_MVet1HmZ";
 
-const supabaseClient =
-  supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY
-  );
+  const supabaseClient =
+    supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
 
-let currentUser = null;
-let currentWallet = null;
+  let currentUser = null;
+  let currentWallet = null;
 
 
-/* CHECK USER */
+  /* =========================
+     CHECK USER
+  ========================= */
 
-async function checkUser() {
+  async function checkUser() {
 
-  const { data, error } =
-    await supabaseClient.auth.getUser();
+    const {
+      data,
+      error
+    } = await supabaseClient.auth.getUser();
 
-  if (error || !data.user) {
-    window.location.href = "Login.html";
-    return;
+    if (error || !data.user) {
+      window.location.href = "Login.html";
+      return;
+    }
+
+    currentUser = data.user;
+
+    document.getElementById("userEmail").textContent =
+      currentUser.email || "";
+
+    await loadWallet();
+    await loadPaymentLinks();
+    await loadPayments();
+    await loadWithdrawals();
   }
 
-  currentUser = data.user;
 
-  document.getElementById("userEmail").textContent =
-    currentUser.email;
+  /* =========================
+     LOAD USDC WALLET
+  ========================= */
 
-  await loadWallet();
-  await loadPaymentLinks();
-  await loadPayments();
-  await loadWithdrawals();
-}
+  async function loadWallet() {
 
-
-/* LOAD WALLET */
-
-async function loadWallet() {
-
-  const { data, error } =
-    await supabaseClient
+    const {
+      data,
+      error
+    } = await supabaseClient
       .from("wallets")
       .select("*")
       .eq("user_id", currentUser.id)
-      .eq("currency", "USD")
-      .single();
+      .eq("currency", "USDC")
+      .maybeSingle();
 
-  if (error || !data) {
+    if (error) {
 
-    console.error(error);
+      console.error("Wallet error:", error);
+
+      currentWallet = null;
+
+      document.getElementById("balance").textContent =
+        "0.00 USDC";
+
+      document.getElementById("withdrawBalance").textContent =
+        "0.00 USDC";
+
+      return;
+    }
+
+    if (!data) {
+
+      console.log("No USDC wallet found.");
+
+      currentWallet = null;
+
+      document.getElementById("balance").textContent =
+        "0.00 USDC";
+
+      document.getElementById("withdrawBalance").textContent =
+        "0.00 USDC";
+
+      return;
+    }
+
+    currentWallet = data;
+
+    const balance =
+      Number(data.available_balance || 0);
 
     document.getElementById("balance").textContent =
-      "$0.00";
+      balance.toFixed(2) + " USDC";
 
     document.getElementById("withdrawBalance").textContent =
-      "$0.00";
-
-    return;
+      balance.toFixed(2) + " USDC";
   }
 
-  currentWallet = data;
 
-  const balance =
-    Number(data.available_balance);
+  /* =========================
+     LOAD PAYMENT LINKS
+  ========================= */
 
-  document.getElementById("balance").textContent =
-    "$" + balance.toFixed(2);
+  async function loadPaymentLinks() {
 
-  document.getElementById("withdrawBalance").textContent =
-    "$" + balance.toFixed(2);
-}
+    const container =
+      document.getElementById("paymentLinks");
 
-
-/* LOAD PAYMENT LINKS */
-
-async function loadPaymentLinks() {
-
-  const { data, error } =
-    await supabaseClient
+    const {
+      data,
+      error
+    } = await supabaseClient
       .from("payment_links")
       .select("*")
       .eq("user_id", currentUser.id)
-      .order("created_at", { ascending: false });
+      .order("created_at", {
+        ascending: false
+      });
 
-  const list =
-    document.getElementById("linksList");
+    if (error) {
 
-  if (error) {
+      console.error("Payment links error:", error);
 
-    list.innerHTML =
-      `<div class="empty">
-        Unable to load payment links.
-      </div>`;
+      container.innerHTML =
+        '<p class="empty">Unable to load payment links.</p>';
 
-    console.error(error);
-    return;
+      return;
+    }
+
+    if (!data || data.length === 0) {
+
+      container.innerHTML =
+        '<p class="empty">No payment links yet.</p>';
+
+      return;
+    }
+
+    container.innerHTML = "";
+
+    data.forEach(link => {
+
+      const item =
+        document.createElement("div");
+
+      item.className = "transaction";
+
+      item.innerHTML = `
+        <div>
+          <strong>${escapeHtml(link.title || "Payment Link")}</strong>
+          <div class="small">
+            ${Number(link.amount || 0).toFixed(2)} USD
+          </div>
+        </div>
+
+        <div class="status">
+          ${link.active ? "Active" : "Inactive"}
+        </div>
+      `;
+
+      container.appendChild(item);
+    });
   }
 
-  if (!data || data.length === 0) {
 
-    list.innerHTML =
-      `<div class="empty">
-        You haven't created any payment links yet.
-      </div>`;
+  /* =========================
+     LOAD PAYMENTS
+  ========================= */
 
-    return;
-  }
+  async function loadPayments() {
 
-  list.innerHTML = "";
+    const container =
+      document.getElementById("transactions");
 
-  data.forEach(link => {
-
-    const publicUrl =
-      window.location.origin +
-      "/Paybridge-/pay.html?slug=" +
-      encodeURIComponent(link.slug);
-
-    const item =
-      document.createElement("div");
-
-    item.className = "link-item";
-
-    item.innerHTML = `
-
-      <div class="link-title">
-        ${escapeHtml(link.title)}
-      </div>
-
-      <div>
-        $${Number(link.amount).toFixed(2)}
-      </div>
-
-      <div class="link-url">
-        ${escapeHtml(publicUrl)}
-      </div>
-
-      <div class="link-buttons">
-
-        <button
-          class="small-btn copy"
-          onclick="copyLink('${encodeURIComponent(publicUrl)}')">
-          Copy Link
-        </button>
-
-        <button
-          class="small-btn delete"
-          onclick="deleteLink('${link.id}')">
-          Delete
-        </button>
-
-      </div>
-
-    `;
-
-    list.appendChild(item);
-
-  });
-}
-
-
-/* LOAD PAYMENTS */
-
-async function loadPayments() {
-
-  const { data, error } =
-    await supabaseClient
+    const {
+      data,
+      error
+    } = await supabaseClient
       .from("payments")
       .select("*")
       .eq("user_id", currentUser.id)
-      .order("created_at", { ascending: false });
+      .order("created_at", {
+        ascending: false
+      })
+      .limit(20);
 
-  if (error) {
-    console.error(error);
-    return;
-  }
+    if (error) {
 
-  let received = 0;
-  let pending = 0;
+      console.error("Payments error:", error);
 
-  data.forEach(payment => {
+      container.innerHTML =
+        '<p class="empty">Unable to load transactions.</p>';
 
-    if (payment.status === "paid") {
-      received += Number(payment.amount);
+      return;
     }
 
-    if (payment.status === "pending") {
-      pending += Number(payment.amount);
+    if (!data || data.length === 0) {
+
+      container.innerHTML =
+        '<p class="empty">No transactions yet.</p>';
+
+      return;
     }
 
-  });
+    container.innerHTML = "";
 
-  document.getElementById("totalReceived").textContent =
-    "$" + received.toFixed(2);
+    data.forEach(payment => {
 
-  document.getElementById("pending").textContent =
-    "$" + pending.toFixed(2);
+      const item =
+        document.createElement("div");
 
-  document.getElementById("transactionCount").textContent =
-    data.length;
+      item.className = "transaction";
 
-  const list =
-    document.getElementById("transactionsList");
+      const amount =
+        Number(payment.amount || 0).toFixed(2);
 
-  if (!data || data.length === 0) {
+      item.innerHTML = `
+        <div>
+          <strong>Payment Received</strong>
+          <div class="small">
+            ${amount} ${escapeHtml(payment.currency || "USD")}
+          </div>
+        </div>
 
-    list.innerHTML =
-      `<div class="empty">
-        No transactions yet.
-      </div>`;
+        <div class="status">
+          ${escapeHtml(payment.status || "pending")}
+        </div>
+      `;
 
-    return;
+      container.appendChild(item);
+    });
   }
 
-  list.innerHTML = "";
 
-  data.slice(0, 10).forEach(payment => {
+  /* =========================
+     LOAD WITHDRAWALS
+  ========================= */
 
-    const item =
-      document.createElement("div");
+  async function loadWithdrawals() {
 
-    item.className = "transaction";
+    const container =
+      document.getElementById("withdrawals");
 
-    item.innerHTML = `
+    const {
+      data,
+      error
+    } = await supabaseClient
+      .from("withdrawals")
+      .select("*")
+      .eq("user_id", currentUser.id)
+      .order("created_at", {
+        ascending: false
+      });
 
-      <strong>
-        $${Number(payment.amount).toFixed(2)}
-      </strong>
+    if (error) {
 
-      —
+      console.error("Withdrawals error:", error);
 
-      <span class="status ${escapeHtml(payment.status)}">
-        ${escapeHtml(payment.status)}
-      </span>
+      container.innerHTML =
+        '<p class="empty">Unable to load withdrawal history.</p>';
 
-      <br>
+      return;
+    }
 
-      <small>
-        ${
-          payment.customer_email
-            ? escapeHtml(payment.customer_email)
-            : "Customer email unavailable"
-        }
-      </small>
+    if (!data || data.length === 0) {
 
-      ${
-        payment.status === "pending"
-          ? `
-            <br>
+      container.innerHTML =
+        '<p class="empty">No withdrawals yet.</p>';
 
-            <button
-              class="paid-button"
-              onclick="markPaymentPaid('${payment.id}')">
-              Mark as Paid
-            </button>
-          `
-          : ""
+      return;
+    }
+
+    container.innerHTML = "";
+
+    data.forEach(withdrawal => {
+
+      const item =
+        document.createElement("div");
+
+      item.className = "transaction";
+
+      const amount =
+        Number(withdrawal.amount || 0).toFixed(2);
+
+      const currency =
+        withdrawal.currency || "USDC";
+
+      const network =
+        withdrawal.network || "ethereum";
+
+      item.innerHTML = `
+        <div>
+          <strong>
+            ${amount} ${escapeHtml(currency)}
+          </strong>
+
+          <div class="small">
+            ${escapeHtml(network)}
+          </div>
+        </div>
+
+        <div class="status">
+          ${escapeHtml(withdrawal.status || "pending")}
+        </div>
+      `;
+
+      container.appendChild(item);
+    });
+  }
+
+
+  /* =========================
+     WITHDRAW USDC
+  ========================= */
+
+  document
+    .getElementById("withdrawForm")
+    .addEventListener("submit", async function(event) {
+
+      event.preventDefault();
+
+      const message =
+        document.getElementById("withdrawMessage");
+
+      const button =
+        document.getElementById("withdrawButton");
+
+      message.style.display = "none";
+      message.className = "message";
+
+      if (!currentWallet) {
+
+        showMessage(
+          "USDC wallet not found. Please make sure your USDC wallet exists.",
+          "error"
+        );
+
+        return;
       }
 
-    `;
+      const method =
+        document.getElementById("withdrawMethod").value;
 
-    list.appendChild(item);
+      const amount =
+        Number(
+          document.getElementById("withdrawAmount").value
+        );
 
-  });
-}
+      const destination =
+        document
+          .getElementById("destinationAddress")
+          .value
+          .trim();
+
+      if (method !== "crypto") {
+
+        showMessage(
+          "Bank withdrawals are coming soon. Please select USDC — Ethereum (ERC-20).",
+          "error"
+        );
+
+        return;
+      }
+
+      if (!amount || amount <= 0) {
+
+        showMessage(
+          "Please enter a valid USDC amount.",
+          "error"
+        );
+
+        return;
+      }
+
+      const availableBalance =
+        Number(currentWallet.available_balance || 0);
+
+      if (amount > availableBalance) {
+
+        showMessage(
+          "Insufficient USDC balance.",
+          "error"
+        );
+
+        return;
+      }
+
+      const ethereumAddress =
+        /^0x[a-fA-F0-9]{40}$/;
+
+      if (!ethereumAddress.test(destination)) {
+
+        showMessage(
+          "Please enter a valid Ethereum (ERC-20) address.",
+          "error"
+        );
+
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = "Processing...";
+
+      try {
+
+        const {
+          data,
+          error
+        } = await supabaseClient.rpc(
+          "request_withdrawal",
+          {
+            p_wallet_id:
+              currentWallet.id,
+
+            p_amount:
+              amount,
+
+            p_method:
+              "crypto",
+
+            p_currency:
+              "USDC",
+
+            p_destination_address:
+              destination,
+
+            p_network:
+              "ethereum"
+          }
+        );
+
+        if (error) {
+
+          console.error(
+            "Withdrawal RPC error:",
+            error
+          );
+
+          throw error;
+        }
+
+        showMessage(
+          "USDC withdrawal request created successfully.",
+          "success"
+        );
+
+        document
+          .getElementById("withdrawForm")
+          .reset();
+
+        await loadWallet();
+        await loadWithdrawals();
+
+      } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+          error.message ||
+          "Unable to create withdrawal request.",
+          "error"
+        );
+
+      } finally {
+
+        button.disabled = false;
+        button.textContent =
+          "Request USDC Withdrawal";
+      }
+
+    });
 
 
-/* MARK PAYMENT AS PAID */
+  /* =========================
+     SHOW MESSAGE
+  ========================= */
 
-async function markPaymentPaid(paymentId) {
-
-  const confirmed =
-    confirm("Mark this payment as paid?");
-
-  if (!confirmed) return;
-
-  const { error } =
-    await supabaseClient
-      .from("payments")
-      .update({
-        status: "paid"
-      })
-      .eq("id", paymentId)
-      .eq("user_id", currentUser.id);
-
-  if (error) {
-
-    alert(
-      "Unable to mark payment as paid: " +
-      error.message
-    );
-
-    console.error(error);
-
-    return;
-  }
-
-  alert("Payment marked as paid!");
-
-  await loadWallet();
-  await loadPayments();
-}
-
-
-/* REQUEST WITHDRAWAL */
-
-document
-  .getElementById("withdrawForm")
-  .addEventListener("submit", async function(event) {
-
-    event.preventDefault();
+  function showMessage(text, type) {
 
     const message =
       document.getElementById("withdrawMessage");
 
-    const button =
-      document.getElementById("withdrawSubmit");
-
-    const method =
-      document.getElementById("withdrawMethod").value;
-
-    const amount =
-      Number(
-        document.getElementById("withdrawAmount").value
-      );
-
-    const destination =
-      document.getElementById("destinationAddress")
-        .value
-        .trim();
-
-    const network =
-      document.getElementById("network").value;
-
-    if (!currentWallet) {
-
-      message.className =
-        "message error";
-
-      message.textContent =
-        "Your wallet could not be loaded.";
-
-      return;
-    }
-
-    if (!method) {
-
-      message.className =
-        "message error";
-
-      message.textContent =
-        "Please select a withdrawal method.";
-
-      return;
-    }
-
-    if (method === "bank") {
-
-      message.className =
-        "message error";
-
-      message.textContent =
-        "Bank withdrawals are coming soon.";
-
-      return;
-    }
-
-    if (!amount || amount <= 0) {
-
-      message.className =
-        "message error";
-
-      message.textContent =
-        "Please enter a valid withdrawal amount.";
-
-      return;
-    }
-
-    if (
-      amount >
-      Number(currentWallet.available_balance)
-    ) {
-
-      message.className =
-        "message error";
-
-      message.textContent =
-        "Insufficient available balance.";
-
-      return;
-    }
-
-    if (!destination) {
-
-      message.className =
-        "message error";
-
-      message.textContent =
-        "Please enter your Ethereum wallet address.";
-
-      return;
-    }
-
-    if (!/^0x[a-fA-F0-9]{40}$/.test(destination)) {
-
-      message.className =
-        "message error";
-
-      message.textContent =
-        "Please enter a valid Ethereum wallet address.";
-
-      return;
-    }
-
-    button.disabled = true;
-
-    button.textContent =
-      "Submitting...";
+    message.textContent = text;
 
     message.className =
-      "message";
+      "message " + type;
 
-    message.textContent =
-      "Creating USDC withdrawal request...";
-
-    const { data, error } =
-      await supabaseClient.rpc(
-        "request_withdrawal",
-        {
-          p_wallet_id:
-            currentWallet.id,
-
-          p_amount:
-            amount,
-
-          p_method:
-            "crypto",
-
-          p_currency:
-            "USD",
-
-          p_destination_address:
-            destination,
-
-          p_network:
-            "ethereum"
-        }
-      );
-
-    if (error) {
-
-      console.error(error);
-
-      message.className =
-        "message error";
-
-      message.textContent =
-        error.message ||
-        "Unable to create withdrawal.";
-
-      button.disabled = false;
-
-      button.textContent =
-        "Request USDC Withdrawal";
-
-      return;
-    }
-
-    message.className =
-      "message success";
-
-    message.textContent =
-      "USDC withdrawal request created successfully.";
-
-    document
-      .getElementById("withdrawForm")
-      .reset();
-
-    button.disabled = false;
-
-    button.textContent =
-      "Request USDC Withdrawal";
-
-    await loadWallet();
-    await loadWithdrawals();
-
-  });
-
-
-/* LOAD WITHDRAWALS */
-
-async function loadWithdrawals() {
-
-  const list =
-    document.getElementById("withdrawalsList");
-
-  const { data, error } =
-    await supabaseClient
-      .from("withdrawals")
-      .select("*")
-      .eq("user_id", currentUser.id)
-      .order("created_at", { ascending: false });
-
-  if (error) {
-
-    console.error(error);
-
-    list.innerHTML =
-      `<div class="empty">
-        Unable to load withdrawal history.
-      </div>`;
-
-    return;
+    message.style.display = "block";
   }
 
-  if (!data || data.length === 0) {
 
-    list.innerHTML =
-      `<div class="empty">
-        No withdrawals yet.
-      </div>`;
+  /* =========================
+     LOGOUT
+  ========================= */
 
-    return;
+  async function logout() {
+
+    await supabaseClient.auth.signOut();
+
+    window.location.href =
+      "Login.html";
   }
 
-  list.innerHTML = "";
 
-  data.slice(0, 10).forEach(withdrawal => {
+  /* =========================
+     SECURITY / HTML ESCAPE
+  ========================= */
 
-    const item =
-      document.createElement("div");
+  function escapeHtml(value) {
 
-    item.className =
-      "transaction";
-
-    item.innerHTML = `
-
-      <strong>
-        $${Number(withdrawal.amount).toFixed(2)}
-      </strong>
-
-      —
-
-      <span class="status ${escapeHtml(withdrawal.status)}">
-        ${escapeHtml(withdrawal.status)}
-      </span>
-
-      <br>
-
-      <small>
-        USDC • Ethereum (ERC-20)
-      </small>
-
-    `;
-
-    list.appendChild(item);
-
-  });
-}
-
-
-/* CREATE PAYMENT LINK */
-
-document
-  .getElementById("linkForm")
-  .addEventListener("submit", async function(event) {
-
-    event.preventDefault();
-
-    const title =
-      document.getElementById("title")
-        .value
-        .trim();
-
-    const amount =
-      Number(
-        document.getElementById("amount").value
-      );
-
-    const description =
-      document.getElementById("description")
-        .value
-        .trim();
-
-    const slug =
-      document.getElementById("slug")
-        .value
-        .trim()
-        .toLowerCase()
-        .replace(/[^a-z0-9-]/g, "-")
-        .replace(/-+/g, "-");
-
-    const message =
-      document.getElementById("formMessage");
-
-    message.textContent =
-      "Creating payment link...";
-
-    const { error } =
-      await supabaseClient
-        .from("payment_links")
-        .insert({
-
-          title: title,
-          amount: amount,
-          description: description,
-          user_id: currentUser.id,
-          active: true,
-          slug: slug
-
-        });
-
-    if (error) {
-
-      if (error.code === "23505") {
-
-        message.textContent =
-          "That link name already exists. Choose another.";
-
-      } else {
-
-        message.textContent =
-          "Error: " + error.message;
-
-      }
-
-      return;
-    }
-
-    message.textContent =
-      "Payment link created successfully!";
-
-    document
-      .getElementById("linkForm")
-      .reset();
-
-    await loadPaymentLinks();
-
-  });
-
-
-/* COPY LINK */
-
-async function copyLink(encodedUrl) {
-
-  const url =
-    decodeURIComponent(encodedUrl);
-
-  try {
-
-    await navigator.clipboard.writeText(url);
-
-    alert("Payment link copied!");
-
-  } catch (error) {
-
-    alert(url);
-
-  }
-}
-
-
-/* DELETE LINK */
-
-async function deleteLink(id) {
-
-  const confirmed =
-    confirm("Delete this payment link?");
-
-  if (!confirmed) return;
-
-  const { error } =
-    await supabaseClient
-      .from("payment_links")
-      .delete()
-      .eq("id", id)
-      .eq("user_id", currentUser.id);
-
-  if (error) {
-
-    alert("Unable to delete payment link.");
-
-    console.error(error);
-
-    return;
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
   }
 
-  await loadPaymentLinks();
-}
 
+  /* =========================
+     START DASHBOARD
+  ========================= */
 
-/* CREATE LINK BUTTON */
-
-function showCreateLink() {
-
-  document
-    .getElementById("createSection")
-    .scrollIntoView({
-      behavior: "smooth"
-    });
-
-}
-
-
-/* LOGOUT */
-
-async function logout() {
-
-  await supabaseClient.auth.signOut();
-
-  window.location.href =
-    "Login.html";
-}
-
-
-/* SECURITY */
-
-function escapeHtml(value) {
-
-  return String(value ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-
-}
-
-
-/* START */
-
-checkUser();
+  checkUser();
 
 </script>
 
