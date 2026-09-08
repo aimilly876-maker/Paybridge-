@@ -199,7 +199,7 @@ textarea {
 }
 
 .transaction {
-  padding: 12px 0;
+  padding: 15px 0;
   border-bottom: 1px solid #e5e7eb;
 }
 
@@ -218,6 +218,16 @@ textarea {
 .failed,
 .cancelled {
   color: #dc2626;
+}
+
+.paid-button {
+  background: #16a34a;
+  color: white;
+  border: none;
+  padding: 9px 12px;
+  border-radius: 7px;
+  cursor: pointer;
+  margin-top: 10px;
 }
 
 @media (max-width: 800px) {
@@ -451,8 +461,6 @@ async function loadPaymentLinks() {
 
   data.forEach(link => {
 
-    /* CORRECT PAYMENT PAGE URL */
-
     const publicUrl =
       window.location.origin +
       "/Paybridge-/pay.html?slug=" +
@@ -588,11 +596,61 @@ async function loadPayments() {
         }
       </small>
 
+      ${
+        payment.status === "pending"
+          ? `
+            <br>
+
+            <button
+              class="paid-button"
+              onclick="markPaymentPaid('${payment.id}')">
+              Mark as Paid
+            </button>
+          `
+          : ""
+      }
+
     `;
 
     list.appendChild(item);
 
   });
+}
+
+
+/* MARK PAYMENT AS PAID */
+
+async function markPaymentPaid(paymentId) {
+
+  const confirmed =
+    confirm("Mark this payment as paid?");
+
+  if (!confirmed) return;
+
+  const { error } =
+    await supabaseClient
+      .from("payments")
+      .update({
+        status: "paid"
+      })
+      .eq("id", paymentId)
+      .eq("user_id", currentUser.id);
+
+  if (error) {
+
+    alert(
+      "Unable to mark payment as paid: " +
+      error.message
+    );
+
+    console.error(error);
+
+    return;
+  }
+
+  alert("Payment marked as paid!");
+
+  await loadPayments();
 }
 
 
