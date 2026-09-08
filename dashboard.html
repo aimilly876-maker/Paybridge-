@@ -91,7 +91,7 @@
       font-size: 15px;
     }
 
-    .transactions {
+    .section {
       margin-top: 25px;
       background: white;
       padding: 20px;
@@ -99,8 +99,35 @@
       box-shadow: 0 3px 12px rgba(0,0,0,0.08);
     }
 
+    .payment-link {
+      border: 1px solid #e5e7eb;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 12px;
+    }
+
+    .payment-link strong {
+      font-size: 17px;
+    }
+
+    .payment-link p {
+      color: #6b7280;
+      margin: 7px 0;
+    }
+
+    .link-url {
+      word-break: break-all;
+      font-size: 13px;
+      color: #2563eb;
+    }
+
     .empty {
       color: #6b7280;
+    }
+
+    .message {
+      margin-top: 15px;
+      color: #dc2626;
     }
   </style>
 </head>
@@ -123,29 +150,29 @@
 
     <div class="card">
       <h3>Balance</h3>
-      <div class="amount">$0.00</div>
+      <div class="amount" id="balance">$0.00</div>
     </div>
 
     <div class="card">
       <h3>Total Received</h3>
-      <div class="amount">$0.00</div>
+      <div class="amount" id="totalReceived">$0.00</div>
     </div>
 
     <div class="card">
       <h3>Transactions</h3>
-      <div class="amount">0</div>
+      <div class="amount" id="transactionCount">0</div>
     </div>
 
     <div class="card">
       <h3>Pending</h3>
-      <div class="amount">$0.00</div>
+      <div class="amount" id="pendingAmount">$0.00</div>
     </div>
 
   </div>
 
   <div class="menu">
 
-    <button onclick="alert('Payment links coming next.')">
+    <button onclick="alert('Payment link creation is next.')">
       🔗 Payment Links
     </button>
 
@@ -167,13 +194,25 @@
 
   </div>
 
-  <div class="transactions">
+  <div class="section">
+
+    <h2>Your Payment Links</h2>
+
+    <div id="paymentLinks">
+      <p class="empty">Loading payment links...</p>
+    </div>
+
+    <div id="message" class="message"></div>
+
+  </div>
+
+  <div class="section">
 
     <h2>Recent Transactions</h2>
 
-    <p class="empty">
-      You don't have any transactions yet.
-    </p>
+    <div id="transactions">
+      <p class="empty">Loading transactions...</p>
+    </div>
 
   </div>
 
@@ -192,24 +231,163 @@
     SUPABASE_PUBLISHABLE_KEY
   );
 
+  let currentUser = null;
+
   async function checkUser() {
 
     const {
-      data: { user }
+      data: { user },
+      error
     } = await supabaseClient.auth.getUser();
 
-    if (!user) {
+    if (error || !user) {
       window.location.href = "login.html";
       return;
     }
 
+    currentUser = user;
+
     document.getElementById("userEmail").textContent =
       "Logged in as " + user.email;
+
+    await loadPaymentLinks();
+    await loadPayments();
+  }
+
+  async function loadPaymentLinks() {
+
+    const { data, error } = await supabaseClient
+      .from("payment_links")
+      .select("*")
+      .eq("user_id", currentUser.id)
+      .order("created_at", { ascending: false });
+
+    const container = document.getElementById("paymentLinks");
+
+    if (error) {
+      container.innerHTML =
+        "<p class='empty'>Unable to load payment links.</p>";
+
+      console.error(error);
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      container.innerHTML =
+        "<p class='empty'>You don't have any payment links yet.</p>";
+      return;
+    }
+
+    container.innerHTML = "";
+
+    data.forEach(function(link) {
+
+      const publicUrl =
+        window.location.origin +
+        "/pay.html?slug=" +
+        encodeURIComponent(link.slug);
+
+      const div = document.createElement("div");
+
+      div.className = "payment-link";
+
+      div.innerHTML = `
+        <strong>${escapeHtml(link.title)}</strong>
+        <p>$${Number(link.amount).toFixed(2)} ${escapeHtml(link.currency || "USD")}</p>
+        <p>${escapeHtml(link.description || "")}</p>
+        <div class="link-url">${escapeHtml(publicUrl)}</div>
+      `;
+
+      container.appendChild(div);
+
+    });
+  }
+
+  async function loadPayments() {
+
+    const { data, error } = await supabaseClient
+      .from("payments")
+      .select("*")
+      .eq("user_id", currentUser.id)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    const transactions =
+      document.getElementById("transactions");
+
+    if (!data || data.length === 0) {
+
+      transactions.innerHTML =
+        "<p class='empty'>You don't have any transactions yet.</p>";
+
+      return;
+    }
+
+    let totalReceived = 0;
+    let pendingAmount = 0;
+
+    data.forEach(function(payment) {
+
+      const amount = Number(payment.amount) || 0;
+
+      if (payment.status === "paid") {
+        totalReceived += amount;
+      }
+
+      if (payment.status === "pending") {
+        pendingAmount += amount;
+      }
+
+    });
+
+    document.getElementById("totalReceived").textContent =
+      "$" + totalReceived.toFixed(2);
+
+    document.getElementById("balance").textContent =
+      "$" + totalReceived.toFixed(2);
+
+    document.getElementById("pendingAmount").textContent =
+      "$" + pendingAmount.toFixed(2);
+
+    document.getElementById("transactionCount").textContent =
+      data.length;
+
+    transactions.innerHTML = "";
+
+    data.slice(0, 10).forEach(function(payment) {
+
+      const div = document.createElement("div");
+
+      div.className = "payment-link";
+
+      div.innerHTML = `
+        <strong>$${Number(payment.amount).toFixed(2)}</strong>
+        <p>Status: ${escapeHtml(payment.status)}</p>
+        <p>${escapeHtml(payment.customer_email || "No customer email")}</p>
+      `;
+
+      transactions.appendChild(div);
+
+    });
+  }
+
+  function escapeHtml(value) {
+
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
   }
 
   document
     .getElementById("logoutButton")
-    .addEventListener("click", async function () {
+    .addEventListener("click", async function() {
 
       await supabaseClient.auth.signOut();
 
