@@ -1,787 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PayFlow Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PayFlow Payment</title>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<style>
-* {
-  box-sizing: border-box;
-}
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f5f7fb;
-  color: #111827;
-}
+    .card {
+      width: 90%;
+      max-width: 420px;
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+    }
 
-header {
-  background: #111827;
-  color: white;
-  padding: 18px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+    h1 {
+      margin-top: 0;
+    }
 
-.logo {
-  font-size: 22px;
-  font-weight: bold;
-}
+    .amount {
+      font-size: 32px;
+      font-weight: bold;
+      margin: 20px 0;
+    }
 
-.logout {
-  background: #ef4444;
-  color: white;
-  border: none;
-  padding: 10px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-}
+    input {
+      width: 100%;
+      padding: 14px;
+      margin: 8px 0 16px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
 
-.container {
-  max-width: 1100px;
-  margin: auto;
-  padding: 25px 18px;
-}
+    button {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 8px;
+      background: #111827;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
 
-.welcome {
-  margin-bottom: 25px;
-}
-
-.welcome h1 {
-  margin-bottom: 6px;
-}
-
-.email {
-  color: #6b7280;
-  font-size: 14px;
-}
-
-.cards {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 15px;
-  margin-bottom: 25px;
-}
-
-.card {
-  background: white;
-  padding: 20px;
-  border-radius: 14px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-}
-
-.card h3 {
-  margin: 0 0 10px;
-  color: #6b7280;
-  font-size: 14px;
-}
-
-.amount {
-  font-size: 25px;
-  font-weight: bold;
-}
-
-.actions {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
-  margin-bottom: 25px;
-}
-
-.action {
-  background: #111827;
-  color: white;
-  border: none;
-  padding: 17px;
-  border-radius: 12px;
-  font-size: 15px;
-  cursor: pointer;
-}
-
-.section {
-  background: white;
-  padding: 20px;
-  border-radius: 14px;
-  margin-bottom: 25px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-}
-
-.section h2 {
-  margin-top: 0;
-}
-
-form {
-  display: grid;
-  gap: 12px;
-}
-
-input, textarea {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 15px;
-}
-
-textarea {
-  min-height: 80px;
-  resize: vertical;
-}
-
-.primary {
-  background: #2563eb;
-  color: white;
-  border: none;
-  padding: 13px;
-  border-radius: 8px;
-  font-size: 15px;
-  cursor: pointer;
-}
-
-.message {
-  margin-top: 12px;
-  font-size: 14px;
-}
-
-.link-item {
-  border: 1px solid #e5e7eb;
-  padding: 15px;
-  border-radius: 10px;
-  margin-top: 12px;
-}
-
-.link-title {
-  font-weight: bold;
-  font-size: 17px;
-}
-
-.link-url {
-  background: #f3f4f6;
-  padding: 10px;
-  border-radius: 7px;
-  margin: 10px 0;
-  word-break: break-all;
-  font-size: 13px;
-}
-
-.link-buttons {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.small-btn {
-  border: none;
-  padding: 9px 12px;
-  border-radius: 7px;
-  cursor: pointer;
-}
-
-.copy {
-  background: #2563eb;
-  color: white;
-}
-
-.delete {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-.empty {
-  color: #6b7280;
-  padding: 10px 0;
-}
-
-.transaction {
-  padding: 12px 0;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.status {
-  font-weight: bold;
-}
-
-.paid {
-  color: #16a34a;
-}
-
-.pending {
-  color: #d97706;
-}
-
-.failed,
-.cancelled {
-  color: #dc2626;
-}
-
-@media (max-width: 800px) {
-  .cards {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .actions {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 500px) {
-  .cards {
-    grid-template-columns: 1fr;
-  }
-
-  header {
-    padding: 15px;
-  }
-
-  .container {
-    padding: 20px 12px;
-  }
-}
-</style>
+    .error {
+      color: red;
+    }
+  </style>
 </head>
 
 <body>
 
-<header>
-  <div class="logo">PayFlow</div>
-  <button class="logout" onclick="logout()">Logout</button>
-</header>
+<div class="card">
+  <h1 id="title">Loading...</h1>
 
-<div class="container">
+  <p id="description"></p>
 
-  <div class="welcome">
-    <h1>Dashboard</h1>
-    <div class="email" id="userEmail">Loading account...</div>
-  </div>
+  <div class="amount" id="amount">$0.00</div>
 
-  <div class="cards">
+  <label>Customer Email</label>
+  <input
+    type="email"
+    id="email"
+    placeholder="Enter your email"
+  >
 
-    <div class="card">
-      <h3>Balance</h3>
-      <div class="amount" id="balance">$0.00</div>
-    </div>
+  <button onclick="continuePayment()">
+    Continue to Payment
+  </button>
 
-    <div class="card">
-      <h3>Total Received</h3>
-      <div class="amount" id="totalReceived">$0.00</div>
-    </div>
-
-    <div class="card">
-      <h3>Pending</h3>
-      <div class="amount" id="pending">$0.00</div>
-    </div>
-
-    <div class="card">
-      <h3>Transactions</h3>
-      <div class="amount" id="transactionCount">0</div>
-    </div>
-
-  </div>
-
-  <div class="actions">
-
-    <button class="action" onclick="showCreateLink()">
-      🔗 Create Payment Link
-    </button>
-
-    <button
-      class="action"
-      onclick="document.getElementById('linksSection').scrollIntoView()">
-      📋 Payment Links
-    </button>
-
-    <button
-      class="action"
-      onclick="document.getElementById('transactionsSection').scrollIntoView()">
-      💳 Transactions
-    </button>
-
-  </div>
-
-  <div class="section" id="createSection">
-
-    <h2>Create Payment Link</h2>
-
-    <form id="linkForm">
-
-      <input
-        type="text"
-        id="title"
-        placeholder="Payment title"
-        required
-      >
-
-      <input
-        type="number"
-        id="amount"
-        placeholder="Amount"
-        step="0.01"
-        min="0.01"
-        required
-      >
-
-      <textarea
-        id="description"
-        placeholder="Description (optional)">
-      </textarea>
-
-      <input
-        type="text"
-        id="slug"
-        placeholder="Custom link name e.g. consultation"
-        required
-      >
-
-      <button class="primary" type="submit">
-        Create Payment Link
-      </button>
-
-    </form>
-
-    <div class="message" id="formMessage"></div>
-
-  </div>
-
-  <div class="section" id="linksSection">
-
-    <h2>Payment Links</h2>
-
-    <div id="linksList">
-      <div class="empty">
-        Loading payment links...
-      </div>
-    </div>
-
-  </div>
-
-  <div class="section" id="transactionsSection">
-
-    <h2>Recent Transactions</h2>
-
-    <div id="transactionsList">
-      <div class="empty">
-        Loading transactions...
-      </div>
-    </div>
-
-  </div>
-
+  <p id="message"></p>
 </div>
 
 <script>
+  const SUPABASE_URL = "https://qfmczhdnmbntjfioyzjc.supabase.co";
 
-const SUPABASE_URL =
-  "https://qfmczhdnmbntjfioyzjc.supabase.co";
+  const SUPABASE_KEY =
+    "sb_publishable_vyPMYAngU34c2YHkTjt_ZA_MVet1HmZ";
 
-const SUPABASE_PUBLISHABLE_KEY =
-  "sb_publishable_vyPMYAngU34c2YHkTjt_ZA_MVet1HmZ";
-
-const supabaseClient = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_PUBLISHABLE_KEY
-);
-
-let currentUser = null;
-
-
-/* CHECK LOGIN */
-
-async function checkUser() {
-
-  const { data, error } =
-    await supabaseClient.auth.getUser();
-
-  if (error || !data.user) {
-
-    window.location.href = "Login.html";
-
-    return;
-  }
-
-  currentUser = data.user;
-
-  document.getElementById("userEmail").textContent =
-    currentUser.email;
-
-  await loadPaymentLinks();
-  await loadPayments();
-}
-
-
-/* LOAD PAYMENT LINKS */
-
-async function loadPaymentLinks() {
-
-  const { data, error } =
-    await supabaseClient
-      .from("payment_links")
-      .select("*")
-      .eq("user_id", currentUser.id)
-      .order("created_at", { ascending: false });
-
-  const list =
-    document.getElementById("linksList");
-
-  if (error) {
-
-    list.innerHTML =
-      `<div class="empty">
-        Unable to load payment links.
-      </div>`;
-
-    console.error(error);
-
-    return;
-  }
-
-  if (!data || data.length === 0) {
-
-    list.innerHTML =
-      `<div class="empty">
-        You haven't created any payment links yet.
-      </div>`;
-
-    return;
-  }
-
-  list.innerHTML = "";
-
-  data.forEach(link => {
-
-    /*
-      IMPORTANT:
-      This is the corrected PayFlow payment URL.
-    */
-
-    const publicUrl =
-      window.location.origin +
-      "/Paybridge-/Pay.html?slug=" +
-      encodeURIComponent(link.slug);
-
-    const item =
-      document.createElement("div");
-
-    item.className = "link-item";
-
-    item.innerHTML = `
-
-      <div class="link-title">
-        ${escapeHtml(link.title)}
-      </div>
-
-      <div>
-        $${Number(link.amount).toFixed(2)}
-      </div>
-
-      <div class="link-url">
-        ${escapeHtml(publicUrl)}
-      </div>
-
-      <div class="link-buttons">
-
-        <button
-          class="small-btn copy"
-          onclick="copyLink('${encodeURIComponent(publicUrl)}')">
-          Copy Link
-        </button>
-
-        <button
-          class="small-btn delete"
-          onclick="deleteLink('${link.id}')">
-          Delete
-        </button>
-
-      </div>
-    `;
-
-    list.appendChild(item);
-
-  });
-}
-
-
-/* LOAD PAYMENTS */
-
-async function loadPayments() {
-
-  const { data, error } =
-    await supabaseClient
-      .from("payments")
-      .select("*")
-      .eq("user_id", currentUser.id)
-      .order("created_at", { ascending: false });
-
-  if (error) {
-
-    console.error(error);
-
-    return;
-  }
-
-  let received = 0;
-  let pending = 0;
-
-  data.forEach(payment => {
-
-    if (payment.status === "paid") {
-
-      received += Number(payment.amount);
-
-    }
-
-    if (payment.status === "pending") {
-
-      pending += Number(payment.amount);
-
-    }
-
-  });
-
-  document.getElementById("balance").textContent =
-    "$" + received.toFixed(2);
-
-  document.getElementById("totalReceived").textContent =
-    "$" + received.toFixed(2);
-
-  document.getElementById("pending").textContent =
-    "$" + pending.toFixed(2);
-
-  document.getElementById("transactionCount").textContent =
-    data.length;
-
-  const list =
-    document.getElementById("transactionsList");
-
-  if (!data || data.length === 0) {
-
-    list.innerHTML =
-      `<div class="empty">
-        No transactions yet.
-      </div>`;
-
-    return;
-  }
-
-  list.innerHTML = "";
-
-  data.slice(0, 10).forEach(payment => {
-
-    const item =
-      document.createElement("div");
-
-    item.className = "transaction";
-
-    item.innerHTML = `
-
-      <strong>
-        $${Number(payment.amount).toFixed(2)}
-      </strong>
-
-      —
-
-      <span class="status ${escapeHtml(payment.status)}">
-        ${escapeHtml(payment.status)}
-      </span>
-
-      <br>
-
-      <small>
-        ${
-          payment.customer_email
-            ? escapeHtml(payment.customer_email)
-            : "Customer email unavailable"
-        }
-      </small>
-
-    `;
-
-    list.appendChild(item);
-
-  });
-}
-
-
-/* CREATE PAYMENT LINK */
-
-document
-  .getElementById("linkForm")
-  .addEventListener(
-    "submit",
-    async function(event) {
-
-      event.preventDefault();
-
-      const title =
-        document.getElementById("title")
-          .value
-          .trim();
-
-      const amount =
-        Number(
-          document.getElementById("amount").value
-        );
-
-      const description =
-        document.getElementById("description")
-          .value
-          .trim();
-
-      const slug =
-        document.getElementById("slug")
-          .value
-          .trim()
-          .toLowerCase()
-          .replace(/[^a-z0-9-]/g, "-")
-          .replace(/-+/g, "-");
-
-      const message =
-        document.getElementById("formMessage");
-
-      message.textContent =
-        "Creating payment link...";
-
-      const { error } =
-        await supabaseClient
-          .from("payment_links")
-          .insert({
-
-            title: title,
-            amount: amount,
-            description: description,
-            user_id: currentUser.id,
-            active: true,
-            slug: slug
-
-          });
-
-      if (error) {
-
-        if (error.code === "23505") {
-
-          message.textContent =
-            "That link name already exists. Choose another.";
-
-        } else {
-
-          message.textContent =
-            "Error: " + error.message;
-
-        }
-
-        return;
-      }
-
-      message.textContent =
-        "Payment link created successfully!";
-
-      document
-        .getElementById("linkForm")
-        .reset();
-
-      await loadPaymentLinks();
-
-    }
+  const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
   );
 
+  const params = new URLSearchParams(window.location.search);
+  const slug = params.get("slug");
 
-/* COPY LINK */
+  let paymentLink = null;
 
-async function copyLink(encodedUrl) {
+  async function loadPaymentLink() {
 
-  const url =
-    decodeURIComponent(encodedUrl);
+    if (!slug) {
+      document.getElementById("title").textContent =
+        "Invalid Payment Link";
 
-  try {
+      return;
+    }
 
-    await navigator.clipboard.writeText(url);
-
-    alert("Payment link copied!");
-
-  } catch (error) {
-
-    alert(url);
-
-  }
-}
-
-
-/* DELETE LINK */
-
-async function deleteLink(id) {
-
-  const confirmed =
-    confirm("Delete this payment link?");
-
-  if (!confirmed) return;
-
-  const { error } =
-    await supabaseClient
+    const { data, error } = await supabaseClient
       .from("payment_links")
-      .delete()
-      .eq("id", id)
-      .eq("user_id", currentUser.id);
+      .select("*")
+      .eq("slug", slug)
+      .eq("active", true)
+      .single();
 
-  if (error) {
+    if (error || !data) {
+      document.getElementById("title").textContent =
+        "Payment Link Not Found";
 
-    alert("Unable to delete payment link.");
+      return;
+    }
 
-    console.error(error);
+    paymentLink = data;
 
-    return;
+    document.getElementById("title").textContent =
+      data.title;
+
+    document.getElementById("description").textContent =
+      data.description || "";
+
+    document.getElementById("amount").textContent =
+      "$" + Number(data.amount).toFixed(2);
   }
 
-  await loadPaymentLinks();
-}
+  async function continuePayment() {
 
+    const email = document.getElementById("email").value.trim();
+    const message = document.getElementById("message");
 
-/* CREATE LINK BUTTON */
+    if (!email) {
+      message.className = "error";
+      message.textContent =
+        "Please enter your email.";
+      return;
+    }
 
-function showCreateLink() {
+    if (!paymentLink) {
+      message.className = "error";
+      message.textContent =
+        "Payment link is unavailable.";
+      return;
+    }
 
-  document
-    .getElementById("createSection")
-    .scrollIntoView({
-      behavior: "smooth"
-    });
+    message.className = "";
+    message.textContent =
+      "Payment checkout will be connected next.";
+  }
 
-}
-
-
-/* LOGOUT */
-
-async function logout() {
-
-  await supabaseClient.auth.signOut();
-
-  window.location.href =
-    "Login.html";
-}
-
-
-/* SECURITY */
-
-function escapeHtml(value) {
-
-  return String(value ?? "")
-
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-
-}
-
-
-/* START */
-
-checkUser();
-
+  loadPaymentLink();
 </script>
 
 </body>
