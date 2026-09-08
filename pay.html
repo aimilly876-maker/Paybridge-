@@ -1,224 +1,396 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PayFlow Payment</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<title>PayFlow Checkout</title>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    .card {
-      width: 90%;
-      max-width: 420px;
-      background: white;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
-    }
+<style>
+* {
+  box-sizing: border-box;
+}
 
-    h1 {
-      margin-top: 0;
-    }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f7fb;
+  color: #111827;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
 
-    .amount {
-      font-size: 32px;
-      font-weight: bold;
-      margin: 20px 0;
-    }
+.checkout {
+  width: 100%;
+  max-width: 450px;
+}
 
-    input {
-      width: 100%;
-      padding: 14px;
-      margin: 8px 0 16px;
-      box-sizing: border-box;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
+.brand {
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
 
-    button {
-      width: 100%;
-      padding: 15px;
-      border: none;
-      border-radius: 8px;
-      background: #111827;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-    }
+.card {
+  background: white;
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+}
 
-    button:disabled {
-      opacity: 0.6;
-    }
+.secure {
+  text-align: center;
+  color: #6b7280;
+  font-size: 13px;
+  margin-bottom: 22px;
+}
 
-    #message {
-      margin-top: 15px;
-    }
+.payment-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
 
-    .error {
-      color: red;
-    }
+.description {
+  color: #6b7280;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
 
-    .success {
-      color: green;
-    }
-  </style>
+.summary {
+  background: #f3f4f6;
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 22px;
+}
+
+.summary-label {
+  color: #6b7280;
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+
+.amount {
+  font-size: 34px;
+  font-weight: bold;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 7px;
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 9px;
+  font-size: 15px;
+  margin-bottom: 18px;
+}
+
+input:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+.pay-button {
+  width: 100%;
+  padding: 15px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 9px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.pay-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.message {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.error {
+  color: #dc2626;
+}
+
+.success {
+  color: #16a34a;
+}
+
+.footer {
+  text-align: center;
+  color: #9ca3af;
+  font-size: 12px;
+  margin-top: 18px;
+}
+</style>
 </head>
 
 <body>
 
-<div class="card">
-  <h1 id="title">Loading...</h1>
+<div class="checkout">
 
-  <p id="description"></p>
+  <div class="brand">
+    PayFlow
+  </div>
 
-  <div class="amount" id="amount">$0.00</div>
+  <div class="card">
 
-  <label for="email">Customer Email</label>
+    <div class="secure">
+      🔒 Secure Checkout
+    </div>
 
-  <input
-    type="email"
-    id="email"
-    placeholder="Enter your email"
-  >
+    <div
+      class="payment-title"
+      id="title">
+      Loading payment...
+    </div>
 
-  <button id="payButton" onclick="continuePayment()">
-    Continue to Payment
-  </button>
+    <div
+      class="description"
+      id="description">
+    </div>
 
-  <p id="message"></p>
+    <div class="summary">
+
+      <div class="summary-label">
+        Amount to pay
+      </div>
+
+      <div
+        class="amount"
+        id="amount">
+        $0.00
+      </div>
+
+    </div>
+
+    <label for="email">
+      Email Address
+    </label>
+
+    <input
+      type="email"
+      id="email"
+      placeholder="you@example.com"
+      autocomplete="email"
+    >
+
+    <button
+      class="pay-button"
+      id="payButton"
+      onclick="continuePayment()">
+      Pay Now
+    </button>
+
+    <div
+      class="message"
+      id="message">
+    </div>
+
+  </div>
+
+  <div class="footer">
+    Powered by PayFlow
+  </div>
+
 </div>
 
 <script>
-  const SUPABASE_URL =
-    "https://qfmczhdnmbntjfioyzjc.supabase.co";
 
-  const SUPABASE_KEY =
-    "sb_publishable_vyPMYAngU34c2YHkTjt_ZA_MVet1HmZ";
+const SUPABASE_URL =
+  "https://qfmczhdnmbntjfioyzjc.supabase.co";
 
-  const supabaseClient = supabase.createClient(
+const SUPABASE_KEY =
+  "sb_publishable_vyPMYAngU34c2YHkTjt_ZA_MVet1HmZ";
+
+const supabaseClient =
+  supabase.createClient(
     SUPABASE_URL,
     SUPABASE_KEY
   );
 
-  const params = new URLSearchParams(
+const params =
+  new URLSearchParams(
     window.location.search
   );
 
-  const slug = params.get("slug");
+const slug =
+  params.get("slug");
 
-  let paymentLink = null;
+let paymentLink = null;
 
-  async function loadPaymentLink() {
 
-    if (!slug) {
-      document.getElementById("title").textContent =
-        "Invalid Payment Link";
-      return;
-    }
+/* LOAD PAYMENT LINK */
 
-    const { data, error } = await supabaseClient
+async function loadPaymentLink() {
+
+  if (!slug) {
+
+    document.getElementById("title")
+      .textContent =
+      "Invalid Payment Link";
+
+    return;
+  }
+
+  const { data, error } =
+    await supabaseClient
       .from("payment_links")
       .select("*")
       .eq("slug", slug)
       .eq("active", true)
       .single();
 
-    if (error || !data) {
-      document.getElementById("title").textContent =
-        "Payment Link Not Found";
-      return;
-    }
+  if (error || !data) {
 
-    paymentLink = data;
+    document.getElementById("title")
+      .textContent =
+      "Payment Link Not Found";
 
-    document.getElementById("title").textContent =
-      data.title;
-
-    document.getElementById("description").textContent =
-      data.description || "";
-
-    document.getElementById("amount").textContent =
-      "$" + Number(data.amount).toFixed(2);
+    return;
   }
 
-  async function continuePayment() {
+  paymentLink = data;
 
-    const email =
-      document.getElementById("email").value.trim();
+  document.getElementById("title")
+    .textContent =
+    data.title;
 
-    const message =
-      document.getElementById("message");
+  document.getElementById("description")
+    .textContent =
+    data.description || "";
 
-    const button =
-      document.getElementById("payButton");
+  document.getElementById("amount")
+    .textContent =
+    "$" + Number(data.amount).toFixed(2);
+}
 
-    if (!email) {
-      message.className = "error";
-      message.textContent =
-        "Please enter your email.";
-      return;
-    }
 
-    if (!paymentLink) {
-      message.className = "error";
-      message.textContent =
-        "Payment link is unavailable.";
-      return;
-    }
+/* CREATE PAYMENT */
 
-    button.disabled = true;
-    button.textContent = "Creating Payment...";
+async function continuePayment() {
 
-    const { data, error } = await supabaseClient
+  const email =
+    document.getElementById("email")
+      .value
+      .trim();
+
+  const message =
+    document.getElementById("message");
+
+  const button =
+    document.getElementById("payButton");
+
+
+  if (!email) {
+
+    message.className =
+      "message error";
+
+    message.textContent =
+      "Please enter your email address.";
+
+    return;
+  }
+
+
+  if (!paymentLink) {
+
+    message.className =
+      "message error";
+
+    message.textContent =
+      "Payment link is unavailable.";
+
+    return;
+  }
+
+
+  button.disabled = true;
+
+  button.textContent =
+    "Processing...";
+
+
+  const { data, error } =
+    await supabaseClient
       .from("payments")
       .insert({
-        payment_link_id: paymentLink.id,
-        user_id: paymentLink.user_id,
-        amount: paymentLink.amount,
-        currency: "USD",
-        status: "pending",
-        customer_email: email
+
+        payment_link_id:
+          paymentLink.id,
+
+        user_id:
+          paymentLink.user_id,
+
+        amount:
+          paymentLink.amount,
+
+        currency:
+          "USD",
+
+        status:
+          "pending",
+
+        customer_email:
+          email
+
       })
       .select()
       .single();
 
-    if (error) {
 
-      console.error(error);
+  if (error) {
 
-      message.className = "error";
-      message.textContent =
-        "Unable to create payment: " + error.message;
+    console.error(error);
 
-      button.disabled = false;
-      button.textContent =
-        "Continue to Payment";
-
-      return;
-    }
-
-    message.className = "success";
+    message.className =
+      "message error";
 
     message.textContent =
-      "Payment created successfully. Payment ID: " +
-      data.id;
+      "Unable to create payment. Please try again.";
+
+    button.disabled = false;
 
     button.textContent =
-      "Payment Created";
+      "Pay Now";
+
+    return;
   }
 
-  loadPaymentLink();
+
+  message.className =
+    "message success";
+
+  message.innerHTML =
+    "Payment request created successfully.<br>" +
+    "Your payment is currently pending.";
+
+
+  button.textContent =
+    "Payment Created";
+}
+
+
+loadPaymentLink();
+
 </script>
 
 </body>
