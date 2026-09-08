@@ -57,8 +57,20 @@
       cursor: pointer;
     }
 
+    button:disabled {
+      opacity: 0.6;
+    }
+
+    #message {
+      margin-top: 15px;
+    }
+
     .error {
       color: red;
+    }
+
+    .success {
+      color: green;
     }
   </style>
 </head>
@@ -72,14 +84,15 @@
 
   <div class="amount" id="amount">$0.00</div>
 
-  <label>Customer Email</label>
+  <label for="email">Customer Email</label>
+
   <input
     type="email"
     id="email"
     placeholder="Enter your email"
   >
 
-  <button onclick="continuePayment()">
+  <button id="payButton" onclick="continuePayment()">
     Continue to Payment
   </button>
 
@@ -87,7 +100,8 @@
 </div>
 
 <script>
-  const SUPABASE_URL = "https://qfmczhdnmbntjfioyzjc.supabase.co";
+  const SUPABASE_URL =
+    "https://qfmczhdnmbntjfioyzjc.supabase.co";
 
   const SUPABASE_KEY =
     "sb_publishable_vyPMYAngU34c2YHkTjt_ZA_MVet1HmZ";
@@ -97,7 +111,10 @@
     SUPABASE_KEY
   );
 
-  const params = new URLSearchParams(window.location.search);
+  const params = new URLSearchParams(
+    window.location.search
+  );
+
   const slug = params.get("slug");
 
   let paymentLink = null;
@@ -107,7 +124,6 @@
     if (!slug) {
       document.getElementById("title").textContent =
         "Invalid Payment Link";
-
       return;
     }
 
@@ -121,7 +137,6 @@
     if (error || !data) {
       document.getElementById("title").textContent =
         "Payment Link Not Found";
-
       return;
     }
 
@@ -139,8 +154,14 @@
 
   async function continuePayment() {
 
-    const email = document.getElementById("email").value.trim();
-    const message = document.getElementById("message");
+    const email =
+      document.getElementById("email").value.trim();
+
+    const message =
+      document.getElementById("message");
+
+    const button =
+      document.getElementById("payButton");
 
     if (!email) {
       message.className = "error";
@@ -156,9 +177,45 @@
       return;
     }
 
-    message.className = "";
+    button.disabled = true;
+    button.textContent = "Creating Payment...";
+
+    const { data, error } = await supabaseClient
+      .from("payments")
+      .insert({
+        payment_link_id: paymentLink.id,
+        user_id: paymentLink.user_id,
+        amount: paymentLink.amount,
+        currency: "USD",
+        status: "pending",
+        customer_email: email
+      })
+      .select()
+      .single();
+
+    if (error) {
+
+      console.error(error);
+
+      message.className = "error";
+      message.textContent =
+        "Unable to create payment: " + error.message;
+
+      button.disabled = false;
+      button.textContent =
+        "Continue to Payment";
+
+      return;
+    }
+
+    message.className = "success";
+
     message.textContent =
-      "Payment checkout will be connected next.";
+      "Payment created successfully. Payment ID: " +
+      data.id;
+
+    button.textContent =
+      "Payment Created";
   }
 
   loadPaymentLink();
