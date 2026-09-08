@@ -27,12 +27,12 @@ body {
 
 .checkout {
   width: 100%;
-  max-width: 450px;
+  max-width: 460px;
 }
 
 .brand {
   text-align: center;
-  font-size: 28px;
+  font-size: 29px;
   font-weight: bold;
   margin-bottom: 20px;
 }
@@ -81,10 +81,17 @@ body {
   font-weight: bold;
 }
 
+.section-title {
+  font-size: 17px;
+  font-weight: bold;
+  margin: 24px 0 14px;
+}
+
 label {
   display: block;
   font-weight: bold;
   margin-bottom: 7px;
+  font-size: 14px;
 }
 
 input {
@@ -93,12 +100,36 @@ input {
   border: 1px solid #d1d5db;
   border-radius: 9px;
   font-size: 15px;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 input:focus {
   outline: none;
   border-color: #2563eb;
+}
+
+.card-row {
+  display: flex;
+  gap: 10px;
+}
+
+.card-row > div {
+  flex: 1;
+}
+
+.payment-icons {
+  display: flex;
+  gap: 7px;
+  margin-bottom: 18px;
+}
+
+.payment-icon {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 6px 9px;
+  font-size: 11px;
+  font-weight: bold;
+  background: white;
 }
 
 .pay-button {
@@ -111,6 +142,7 @@ input:focus {
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
+  margin-top: 6px;
 }
 
 .pay-button:disabled {
@@ -131,6 +163,17 @@ input:focus {
 
 .success {
   color: #16a34a;
+}
+
+.notice {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  color: #9a3412;
+  border-radius: 9px;
+  padding: 12px;
+  font-size: 12px;
+  line-height: 1.4;
+  margin-top: 16px;
 }
 
 .footer {
@@ -185,6 +228,76 @@ input:focus {
       autocomplete="email"
     >
 
+    <div class="section-title">
+      Payment Method
+    </div>
+
+    <div class="payment-icons">
+      <div class="payment-icon">VISA</div>
+      <div class="payment-icon">MC</div>
+      <div class="payment-icon">AMEX</div>
+      <div class="payment-icon">APPLE PAY</div>
+      <div class="payment-icon">G PAY</div>
+    </div>
+
+    <label for="cardName">
+      Cardholder Name
+    </label>
+
+    <input
+      type="text"
+      id="cardName"
+      placeholder="Name on card"
+      autocomplete="cc-name"
+    >
+
+    <label for="cardNumber">
+      Card Number
+    </label>
+
+    <input
+      type="text"
+      id="cardNumber"
+      placeholder="1234 5678 9012 3456"
+      inputmode="numeric"
+      autocomplete="off"
+      maxlength="19"
+    >
+
+    <div class="card-row">
+
+      <div>
+        <label for="expiry">
+          Expiration
+        </label>
+
+        <input
+          type="text"
+          id="expiry"
+          placeholder="MM/YY"
+          inputmode="numeric"
+          autocomplete="off"
+          maxlength="5"
+        >
+      </div>
+
+      <div>
+        <label for="cvv">
+          CVV
+        </label>
+
+        <input
+          type="password"
+          id="cvv"
+          placeholder="123"
+          inputmode="numeric"
+          autocomplete="off"
+          maxlength="4"
+        >
+      </div>
+
+    </div>
+
     <button
       class="pay-button"
       id="payButton"
@@ -192,6 +305,13 @@ input:focus {
     >
       Pay Now
     </button>
+
+    <div
+      class="notice"
+    >
+      This is a payment interface preview.
+      Card information is not processed or stored yet.
+    </div>
 
     <div
       class="message"
@@ -230,10 +350,6 @@ const slug =
 
 let paymentLink = null;
 
-/*
-  Prevents Pay Now from being submitted
-  more than once.
-*/
 let paymentSubmitting = false;
 
 
@@ -278,15 +394,24 @@ async function loadPaymentLink() {
 
 async function continuePayment() {
 
-  /*
-    Stop duplicate clicks/submissions.
-  */
   if (paymentSubmitting) {
     return;
   }
 
   const email =
     document.getElementById("email").value.trim();
+
+  const cardName =
+    document.getElementById("cardName").value.trim();
+
+  const cardNumber =
+    document.getElementById("cardNumber").value.trim();
+
+  const expiry =
+    document.getElementById("expiry").value.trim();
+
+  const cvv =
+    document.getElementById("cvv").value.trim();
 
   const message =
     document.getElementById("message");
@@ -307,6 +432,18 @@ async function continuePayment() {
   }
 
 
+  if (!cardName || !cardNumber || !expiry || !cvv) {
+
+    message.className =
+      "message error";
+
+    message.textContent =
+      "Please complete all card fields.";
+
+    return;
+  }
+
+
   if (!paymentLink) {
 
     message.className =
@@ -319,9 +456,6 @@ async function continuePayment() {
   }
 
 
-  /*
-    Lock the payment button immediately.
-  */
   paymentSubmitting = true;
 
   button.disabled = true;
@@ -329,6 +463,12 @@ async function continuePayment() {
   button.textContent =
     "Processing...";
 
+
+  /*
+    IMPORTANT:
+    Card details are NOT sent to Supabase.
+    They are only used for this interface preview.
+  */
 
   const { data, error } =
     await supabaseClient
@@ -362,10 +502,6 @@ async function continuePayment() {
 
     console.error(error);
 
-    /*
-      Allow another attempt if
-      the payment failed.
-    */
     paymentSubmitting = false;
 
     button.disabled = false;
@@ -383,10 +519,6 @@ async function continuePayment() {
   }
 
 
-  /*
-    Payment was successfully created.
-    Keep the button locked.
-  */
   message.className =
     "message success";
 
