@@ -156,16 +156,11 @@ input:focus {
       🔒 Secure Checkout
     </div>
 
-    <div
-      class="payment-title"
-      id="title">
+    <div class="payment-title" id="title">
       Loading payment...
     </div>
 
-    <div
-      class="description"
-      id="description">
-    </div>
+    <div class="description" id="description"></div>
 
     <div class="summary">
 
@@ -173,9 +168,7 @@ input:focus {
         Amount to pay
       </div>
 
-      <div
-        class="amount"
-        id="amount">
+      <div class="amount" id="amount">
         $0.00
       </div>
 
@@ -195,14 +188,15 @@ input:focus {
     <button
       class="pay-button"
       id="payButton"
-      onclick="continuePayment()">
+      onclick="continuePayment()"
+    >
       Pay Now
     </button>
 
     <div
       class="message"
-      id="message">
-    </div>
+      id="message"
+    ></div>
 
   </div>
 
@@ -236,15 +230,18 @@ const slug =
 
 let paymentLink = null;
 
+/*
+  Prevents Pay Now from being submitted
+  more than once.
+*/
+let paymentSubmitting = false;
 
-/* LOAD PAYMENT LINK */
 
 async function loadPaymentLink() {
 
   if (!slug) {
 
-    document.getElementById("title")
-      .textContent =
+    document.getElementById("title").textContent =
       "Invalid Payment Link";
 
     return;
@@ -260,8 +257,7 @@ async function loadPaymentLink() {
 
   if (error || !data) {
 
-    document.getElementById("title")
-      .textContent =
+    document.getElementById("title").textContent =
       "Payment Link Not Found";
 
     return;
@@ -269,28 +265,28 @@ async function loadPaymentLink() {
 
   paymentLink = data;
 
-  document.getElementById("title")
-    .textContent =
+  document.getElementById("title").textContent =
     data.title;
 
-  document.getElementById("description")
-    .textContent =
+  document.getElementById("description").textContent =
     data.description || "";
 
-  document.getElementById("amount")
-    .textContent =
+  document.getElementById("amount").textContent =
     "$" + Number(data.amount).toFixed(2);
 }
 
 
-/* CREATE PAYMENT */
-
 async function continuePayment() {
 
+  /*
+    Stop duplicate clicks/submissions.
+  */
+  if (paymentSubmitting) {
+    return;
+  }
+
   const email =
-    document.getElementById("email")
-      .value
-      .trim();
+    document.getElementById("email").value.trim();
 
   const message =
     document.getElementById("message");
@@ -322,6 +318,11 @@ async function continuePayment() {
     return;
   }
 
+
+  /*
+    Lock the payment button immediately.
+  */
+  paymentSubmitting = true;
 
   button.disabled = true;
 
@@ -361,21 +362,31 @@ async function continuePayment() {
 
     console.error(error);
 
-    message.className =
-      "message error";
-
-    message.textContent =
-      "Unable to create payment. Please try again.";
+    /*
+      Allow another attempt if
+      the payment failed.
+    */
+    paymentSubmitting = false;
 
     button.disabled = false;
 
     button.textContent =
       "Pay Now";
 
+    message.className =
+      "message error";
+
+    message.textContent =
+      "Unable to create payment. Please try again.";
+
     return;
   }
 
 
+  /*
+    Payment was successfully created.
+    Keep the button locked.
+  */
   message.className =
     "message success";
 
@@ -383,9 +394,9 @@ async function continuePayment() {
     "Payment request created successfully.<br>" +
     "Your payment is currently pending.";
 
-
   button.textContent =
     "Payment Created";
+
 }
 
 
