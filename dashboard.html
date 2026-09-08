@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -88,7 +89,7 @@ header {
 
 .actions {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 15px;
   margin-bottom: 25px;
 }
@@ -121,12 +122,14 @@ form {
 }
 
 input,
-textarea {
+textarea,
+select {
   width: 100%;
   padding: 12px;
   border: 1px solid #d1d5db;
   border-radius: 8px;
   font-size: 15px;
+  background: white;
 }
 
 textarea {
@@ -144,9 +147,34 @@ textarea {
   cursor: pointer;
 }
 
+.withdraw-button {
+  background: #16a34a;
+  color: white;
+  border: none;
+  padding: 13px;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.withdraw-button:disabled,
+.primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .message {
   margin-top: 12px;
   font-size: 14px;
+  line-height: 1.5;
+}
+
+.success {
+  color: #16a34a;
+}
+
+.error {
+  color: #dc2626;
 }
 
 .link-item {
@@ -230,18 +258,31 @@ textarea {
   margin-top: 10px;
 }
 
+.withdraw-info {
+  background: #f3f4f6;
+  padding: 14px;
+  border-radius: 9px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
 @media (max-width: 800px) {
   .cards {
     grid-template-columns: repeat(2, 1fr);
   }
 
   .actions {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 500px) {
   .cards {
+    grid-template-columns: 1fr;
+  }
+
+  .actions {
     grid-template-columns: 1fr;
   }
 
@@ -273,7 +314,7 @@ textarea {
   <div class="cards">
 
     <div class="card">
-      <h3>Balance</h3>
+      <h3>Available Balance</h3>
       <div class="amount" id="balance">$0.00</div>
     </div>
 
@@ -302,15 +343,72 @@ textarea {
 
     <button
       class="action"
-      onclick="document.getElementById('linksSection').scrollIntoView()">
+      onclick="document.getElementById('linksSection').scrollIntoView({behavior:'smooth'})">
       📋 Payment Links
     </button>
 
     <button
       class="action"
-      onclick="document.getElementById('transactionsSection').scrollIntoView()">
+      onclick="document.getElementById('transactionsSection').scrollIntoView({behavior:'smooth'})">
       💳 Transactions
     </button>
+
+    <button
+      class="action"
+      onclick="document.getElementById('withdrawSection').scrollIntoView({behavior:'smooth'})">
+      💸 Withdraw
+    </button>
+
+  </div>
+
+  <div class="section" id="withdrawSection">
+
+    <h2>Withdraw Funds</h2>
+
+    <div class="withdraw-info">
+      Available to withdraw:
+      <strong id="withdrawBalance">$0.00</strong>
+    </div>
+
+    <form id="withdrawForm">
+
+      <select id="withdrawMethod" required>
+        <option value="">Select withdrawal method</option>
+        <option value="crypto">Crypto</option>
+        <option value="bank">Bank</option>
+      </select>
+
+      <input
+        type="number"
+        id="withdrawAmount"
+        placeholder="Amount"
+        step="0.01"
+        min="0.01"
+        required
+      >
+
+      <input
+        type="text"
+        id="destinationAddress"
+        placeholder="Crypto wallet address"
+      >
+
+      <input
+        type="text"
+        id="network"
+        placeholder="Network e.g. Bitcoin, Ethereum, Tron"
+      >
+
+      <button
+        class="withdraw-button"
+        id="withdrawSubmit"
+        type="submit">
+        Request Withdrawal
+      </button>
+
+    </form>
+
+    <div class="message" id="withdrawMessage"></div>
 
   </div>
 
@@ -382,6 +480,18 @@ textarea {
 
   </div>
 
+  <div class="section">
+
+    <h2>Withdrawal History</h2>
+
+    <div id="withdrawalsList">
+      <div class="empty">
+        Loading withdrawals...
+      </div>
+    </div>
+
+  </div>
+
 </div>
 
 <script>
@@ -398,6 +508,7 @@ const supabaseClient = supabase.createClient(
 );
 
 let currentUser = null;
+let currentWallet = null;
 
 
 /* CHECK USER */
@@ -417,8 +528,48 @@ async function checkUser() {
   document.getElementById("userEmail").textContent =
     currentUser.email;
 
+  await loadWallet();
   await loadPaymentLinks();
   await loadPayments();
+  await loadWithdrawals();
+}
+
+
+/* LOAD WALLET */
+
+async function loadWallet() {
+
+  const { data, error } =
+    await supabaseClient
+      .from("wallets")
+      .select("*")
+      .eq("user_id", currentUser.id)
+      .eq("currency", "USD")
+      .single();
+
+  if (error || !data) {
+
+    console.error(error);
+
+    document.getElementById("balance").textContent =
+      "$0.00";
+
+    document.getElementById("withdrawBalance").textContent =
+      "$0.00";
+
+    return;
+  }
+
+  currentWallet = data;
+
+  const balance =
+    Number(data.available_balance);
+
+  document.getElementById("balance").textContent =
+    "$" + balance.toFixed(2);
+
+  document.getElementById("withdrawBalance").textContent =
+    "$" + balance.toFixed(2);
 }
 
 
@@ -540,9 +691,6 @@ async function loadPayments() {
 
   });
 
-  document.getElementById("balance").textContent =
-    "$" + received.toFixed(2);
-
   document.getElementById("totalReceived").textContent =
     "$" + received.toFixed(2);
 
@@ -650,7 +798,233 @@ async function markPaymentPaid(paymentId) {
 
   alert("Payment marked as paid!");
 
+  await loadWallet();
   await loadPayments();
+}
+
+
+/* REQUEST WITHDRAWAL */
+
+document
+  .getElementById("withdrawForm")
+  .addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    const message =
+      document.getElementById("withdrawMessage");
+
+    const button =
+      document.getElementById("withdrawSubmit");
+
+    const method =
+      document.getElementById("withdrawMethod").value;
+
+    const amount =
+      Number(
+        document.getElementById("withdrawAmount").value
+      );
+
+    const destination =
+      document.getElementById("destinationAddress")
+        .value
+        .trim();
+
+    const network =
+      document.getElementById("network")
+        .value
+        .trim();
+
+    if (!currentWallet) {
+
+      message.className = "message error";
+
+      message.textContent =
+        "Your wallet could not be loaded.";
+
+      return;
+    }
+
+    if (!method) {
+
+      message.className = "message error";
+
+      message.textContent =
+        "Please select a withdrawal method.";
+
+      return;
+    }
+
+    if (!amount || amount <= 0) {
+
+      message.className = "message error";
+
+      message.textContent =
+        "Please enter a valid withdrawal amount.";
+
+      return;
+    }
+
+    if (amount > Number(currentWallet.available_balance)) {
+
+      message.className = "message error";
+
+      message.textContent =
+        "Insufficient available balance.";
+
+      return;
+    }
+
+    if (method === "crypto" && (!destination || !network)) {
+
+      message.className = "message error";
+
+      message.textContent =
+        "Please enter the crypto wallet address and network.";
+
+      return;
+    }
+
+    button.disabled = true;
+
+    button.textContent =
+      "Submitting...";
+
+    message.className =
+      "message";
+
+    message.textContent =
+      "Creating withdrawal request...";
+
+    const { data, error } =
+      await supabaseClient.rpc(
+        "request_withdrawal",
+        {
+          p_wallet_id: currentWallet.id,
+          p_amount: amount,
+          p_method: method,
+          p_currency: "USD",
+          p_destination_address:
+            destination || null,
+          p_network:
+            network || null
+        }
+      );
+
+    if (error) {
+
+      console.error(error);
+
+      message.className =
+        "message error";
+
+      message.textContent =
+        error.message ||
+        "Unable to create withdrawal.";
+
+      button.disabled = false;
+
+      button.textContent =
+        "Request Withdrawal";
+
+      return;
+    }
+
+    message.className =
+      "message success";
+
+    message.textContent =
+      "Withdrawal request created successfully.";
+
+    document
+      .getElementById("withdrawForm")
+      .reset();
+
+    button.disabled = false;
+
+    button.textContent =
+      "Request Withdrawal";
+
+    await loadWallet();
+    await loadWithdrawals();
+
+  });
+
+
+/* LOAD WITHDRAWALS */
+
+async function loadWithdrawals() {
+
+  const list =
+    document.getElementById("withdrawalsList");
+
+  const { data, error } =
+    await supabaseClient
+      .from("withdrawals")
+      .select("*")
+      .eq("user_id", currentUser.id)
+      .order("created_at", { ascending: false });
+
+  if (error) {
+
+    console.error(error);
+
+    list.innerHTML =
+      `<div class="empty">
+        Unable to load withdrawal history.
+      </div>`;
+
+    return;
+  }
+
+  if (!data || data.length === 0) {
+
+    list.innerHTML =
+      `<div class="empty">
+        No withdrawals yet.
+      </div>`;
+
+    return;
+  }
+
+  list.innerHTML = "";
+
+  data.slice(0, 10).forEach(withdrawal => {
+
+    const item =
+      document.createElement("div");
+
+    item.className =
+      "transaction";
+
+    item.innerHTML = `
+
+      <strong>
+        $${Number(withdrawal.amount).toFixed(2)}
+      </strong>
+
+      —
+
+      <span class="status ${escapeHtml(withdrawal.status)}">
+        ${escapeHtml(withdrawal.status)}
+      </span>
+
+      <br>
+
+      <small>
+        ${escapeHtml(withdrawal.method)}
+        ${
+          withdrawal.network
+            ? " • " + escapeHtml(withdrawal.network)
+            : ""
+        }
+      </small>
+
+    `;
+
+    list.appendChild(item);
+
+  });
 }
 
 
@@ -803,7 +1177,8 @@ async function logout() {
 
   await supabaseClient.auth.signOut();
 
-  window.location.href = "Login.html";
+  window.location.href =
+    "Login.html";
 }
 
 
