@@ -404,9 +404,9 @@ async function loadPaymentLinks() {
   data.forEach(link => {
 
     const publicUrl =
-      window.location.origin +
-      "/pay.html?slug=" +
-      encodeURIComponent(link.slug);
+  window.location.origin +
+  "/Paybridge-/Pay.html?slug=" +
+  encodeURIComponent(link.slug);
 
     const item = document.createElement("div");
     item.className = "link-item";
