@@ -1,632 +1,902 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-<title>PayFlow Checkout</title>
+  <title>PayFlow Checkout</title>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<style>
-* {
-  box-sizing: border-box;
-}
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f5f7fb;
-  color: #111827;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      color: #222;
+    }
 
-.checkout {
-  width: 100%;
-  max-width: 460px;
-}
+    .container {
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 15px;
+    }
 
-.brand {
-  text-align: center;
-  font-size: 30px;
-  font-weight: bold;
-  margin-bottom: 20px;
-  letter-spacing: -1px;
-}
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 14px;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+    }
 
-.card {
-  background: white;
-  border-radius: 20px;
-  padding: 28px;
-  box-shadow: 0 10px 35px rgba(0,0,0,0.08);
-}
+    .logo {
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 25px;
+    }
 
-.secure {
-  text-align: center;
-  color: #6b7280;
-  font-size: 13px;
-  margin-bottom: 22px;
-}
+    h2 {
+      margin-bottom: 10px;
+    }
 
-.payment-title {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 8px;
-}
+    .description {
+      color: #6b7280;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
 
-.description {
-  color: #6b7280;
-  line-height: 1.5;
-  margin-bottom: 20px;
-}
+    .amount-box {
+      background: #f3f4f6;
+      padding: 18px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
 
-.summary {
-  background: #f3f4f6;
-  border-radius: 14px;
-  padding: 18px;
-  margin-bottom: 22px;
-}
+    .amount-label {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 5px;
+    }
 
-.summary-label {
-  color: #6b7280;
-  font-size: 13px;
-  margin-bottom: 5px;
-}
+    .amount {
+      font-size: 30px;
+      font-weight: bold;
+    }
 
-.amount {
-  font-size: 34px;
-  font-weight: bold;
-}
+    label {
+      display: block;
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
 
-.section-title {
-  font-size: 17px;
-  font-weight: bold;
-  margin: 24px 0 14px;
-}
+    input,
+    select {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 15px;
+      margin-bottom: 16px;
+    }
 
-label {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 7px;
-  font-size: 14px;
-}
+    .payment-option {
+      border: 1px solid #d1d5db;
+      padding: 14px;
+      border-radius: 9px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
 
-input {
-  width: 100%;
-  padding: 14px;
-  border: 1px solid #d1d5db;
-  border-radius: 9px;
-  font-size: 15px;
-  margin-bottom: 16px;
-  background: white;
-}
+    .payment-option:hover {
+      background: #f9fafb;
+    }
 
-input:focus {
-  outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37,99,235,0.08);
-}
+    .payment-option input {
+      width: auto;
+      margin: 0 8px 0 0;
+    }
 
-/* PAYMENT LOGOS */
+    .option-title {
+      font-weight: bold;
+    }
 
-.payment-icons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 20px;
-}
+    .option-description {
+      display: block;
+      margin-top: 5px;
+      margin-left: 25px;
+      font-size: 13px;
+      color: #6b7280;
+    }
 
-.payment-icon {
-  min-width: 62px;
-  height: 40px;
+    .conversion-box {
+      display: none;
+      background: #f3f4f6;
+      padding: 15px;
+      border-radius: 9px;
+      margin-bottom: 18px;
+    }
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    .conversion-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+    }
 
-  border: 1px solid #e5e7eb;
-  border-radius: 9px;
+    .total {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid #d1d5db;
+      font-weight: bold;
+    }
 
-  background: #ffffff;
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      background: #2563eb;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-  font-size: 10px;
-  font-weight: bold;
+    button:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
 
-  box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+    .message {
+      display: none;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 15px;
+    }
 
-  transition: all 0.2s ease;
-}
+    .success {
+      background: #dcfce7;
+      color: #166534;
+    }
 
-.payment-icon:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 7px 18px rgba(37,99,235,0.15);
-}
+    .error {
+      background: #fee2e2;
+      color: #991b1b;
+    }
 
-/* VISA */
-
-.visa {
-  color: #1a1f71;
-  font-size: 16px;
-  font-style: italic;
-}
-
-/* MASTERCARD */
-
-.mastercard {
-  color: #111827;
-  font-size: 9px;
-}
-
-/* AMERICAN EXPRESS */
-
-.amex {
-  color: #006fcf;
-  font-size: 8px;
-  text-align: center;
-  line-height: 9px;
-}
-
-/* APPLE PAY */
-
-.apple {
-  color: #111827;
-  font-size: 12px;
-}
-
-/* GOOGLE PAY */
-
-.google {
-  color: #4285f4;
-  font-size: 10px;
-}
-
-.card-row {
-  display: flex;
-  gap: 10px;
-}
-
-.card-row > div {
-  flex: 1;
-}
-
-.pay-button {
-  width: 100%;
-  padding: 15px;
-
-  background: #2563eb;
-  color: white;
-
-  border: none;
-  border-radius: 9px;
-
-  font-size: 16px;
-  font-weight: bold;
-
-  cursor: pointer;
-
-  margin-top: 6px;
-
-  box-shadow: 0 5px 14px rgba(37,99,235,0.18);
-
-  transition: all 0.2s ease;
-}
-
-.pay-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 7px 18px rgba(37,99,235,0.25);
-}
-
-.pay-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.message {
-  text-align: center;
-  margin-top: 16px;
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-.error {
-  color: #dc2626;
-}
-
-.success {
-  color: #16a34a;
-}
-
-.notice {
-  background: #fff7ed;
-  border: 1px solid #fed7aa;
-  color: #9a3412;
-  border-radius: 9px;
-  padding: 12px;
-  font-size: 12px;
-  line-height: 1.4;
-  margin-top: 16px;
-}
-
-.footer {
-  text-align: center;
-  color: #9ca3af;
-  font-size: 12px;
-  margin-top: 18px;
-}
-</style>
+    .small {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 15px;
+      line-height: 1.5;
+      text-align: center;
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="checkout">
-
-  <div class="brand">
-    PayFlow
-  </div>
+<div class="container">
 
   <div class="card">
 
-    <div class="secure">
-      🔒 Secure Checkout
+    <div class="logo">
+      PayFlow
     </div>
 
-    <div class="payment-title" id="title">
-      Loading payment...
-    </div>
+    <h2 id="paymentTitle">
+      Payment
+    </h2>
 
-    <div class="description" id="description"></div>
+    <p
+      class="description"
+      id="paymentDescription"
+    >
+      Secure payment through PayFlow.
+    </p>
 
-    <div class="summary">
+    <div class="amount-box">
 
-      <div class="summary-label">
-        Amount to pay
+      <div class="amount-label">
+        Amount
       </div>
 
-      <div class="amount" id="amount">
-        $0.00
+      <div
+        class="amount"
+        id="paymentAmount"
+      >
+        $0.00 USD
       </div>
 
     </div>
 
-    <label for="email">
-      Email Address
+
+    <!-- PAYMENT METHOD -->
+
+    <label>
+      Choose Payment Method
+    </label>
+
+    <label class="payment-option">
+
+      <input
+        type="radio"
+        name="paymentMethod"
+        value="USD"
+        checked
+      >
+
+      <span class="option-title">
+        USD — Card Payment
+      </span>
+
+      <span class="option-description">
+        Pay using an accepted debit or credit card.
+      </span>
+
+    </label>
+
+
+    <label class="payment-option">
+
+      <input
+        type="radio"
+        name="paymentMethod"
+        value="USDC"
+      >
+
+      <span class="option-title">
+        USDC — Ethereum
+      </span>
+
+      <span class="option-description">
+        Pay using USDC on the Ethereum network.
+      </span>
+
+    </label>
+
+
+    <!-- USDC CONVERSION -->
+
+    <div
+      class="conversion-box"
+      id="conversionBox"
+    >
+
+      <div class="conversion-row">
+        <span>USD Amount</span>
+        <strong id="usdAmount">
+          $0.00
+        </strong>
+      </div>
+
+      <div class="conversion-row">
+        <span>Conversion Rate</span>
+        <strong id="conversionRate">
+          1 USD = 1 USDC
+        </strong>
+      </div>
+
+      <div class="conversion-row total">
+        <span>USDC Required</span>
+        <strong id="usdcAmount">
+          0.00 USDC
+        </strong>
+      </div>
+
+    </div>
+
+
+    <label for="customerEmail">
+      Email
     </label>
 
     <input
       type="email"
-      id="email"
-      placeholder="you@example.com"
-      autocomplete="email"
+      id="customerEmail"
+      placeholder="Enter your email"
+      required
     >
 
-    <div class="section-title">
-      Payment Method
-    </div>
 
-    <div class="payment-icons">
+    <div id="cardFields">
 
-      <div class="payment-icon visa">
-        VISA
-      </div>
+      <label for="cardName">
+        Cardholder Name
+      </label>
 
-      <div class="payment-icon mastercard">
-        ●● MASTERCARD
-      </div>
+      <input
+        type="text"
+        id="cardName"
+        placeholder="Name on card"
+      >
 
-      <div class="payment-icon amex">
-        AMERICAN<br>
-        EXPRESS
-      </div>
-
-      <div class="payment-icon apple">
-         Pay
-      </div>
-
-      <div class="payment-icon google">
-        G Pay
-      </div>
+      <p class="small">
+        Card details are not stored by this page.
+        A real card processor must be connected before
+        live card payments are accepted.
+      </p>
 
     </div>
 
-    <label for="cardName">
-      Cardholder Name
-    </label>
 
-    <input
-      type="text"
-      id="cardName"
-      placeholder="Name on card"
-      autocomplete="off"
-    >
+    <div id="usdcFields" style="display:none;">
 
-    <label for="cardNumber">
-      Card Number
-    </label>
+      <label for="walletAddress">
+        Your USDC Wallet Address
+      </label>
 
-    <input
-      type="text"
-      id="cardNumber"
-      placeholder="1234 5678 9012 3456"
-      inputmode="numeric"
-      autocomplete="off"
-      maxlength="19"
-    >
+      <input
+        type="text"
+        id="walletAddress"
+        placeholder="0x..."
+      >
 
-    <div class="card-row">
-
-      <div>
-
-        <label for="expiry">
-          Expiration
-        </label>
-
-        <input
-          type="text"
-          id="expiry"
-          placeholder="MM/YY"
-          inputmode="numeric"
-          autocomplete="off"
-          maxlength="5"
-        >
-
-      </div>
-
-      <div>
-
-        <label for="cvv">
-          CVV
-        </label>
-
-        <input
-          type="password"
-          id="cvv"
-          placeholder="123"
-          inputmode="numeric"
-          autocomplete="off"
-          maxlength="4"
-        >
-
-      </div>
+      <p class="small">
+        USDC payments must use the Ethereum/ERC-20 network.
+      </p>
 
     </div>
+
 
     <button
-      class="pay-button"
       id="payButton"
-      onclick="continuePayment()"
+      type="button"
     >
-      Pay Now
+      Continue with USD Payment
     </button>
 
-    <div class="notice">
-      This is a payment interface preview.
-      Card information is not processed or stored yet.
-    </div>
 
     <div
-      class="message"
       id="message"
+      class="message"
     ></div>
 
-  </div>
 
-  <div class="footer">
-    Powered by PayFlow
+    <p class="small">
+      PayFlow keeps USD and USDC payment records separate.
+      Conversion rates and fees must be confirmed before
+      a real conversion is executed.
+    </p>
+
   </div>
 
 </div>
 
+
 <script>
 
-const SUPABASE_URL =
-  "https://qfmczhdnmbntjfioyzjc.supabase.co";
+  /* =========================
+     SUPABASE
+  ========================= */
 
-const SUPABASE_KEY =
-  "sb_publishable_vyPMYAngU34c2YHkTjt_ZA_MVet1HmZ";
+  const SUPABASE_URL =
+    "https://qfmczhdnmbntjfioyzjc.supabase.co";
 
-const supabaseClient =
-  supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+  const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_vyPMYAngU34c2YHkTjt_ZA_MVet1HmZ";
 
-const params =
-  new URLSearchParams(
-    window.location.search
-  );
-
-const slug =
-  params.get("slug");
-
-let paymentLink = null;
-
-let paymentSubmitting = false;
+  const supabaseClient =
+    supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
 
 
-async function loadPaymentLink() {
+  /* =========================
+     PAGE DATA
+  ========================= */
 
-  if (!slug) {
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
 
-    document.getElementById("title").textContent =
-      "Invalid Payment Link";
+  const slug =
+    params.get("slug");
 
-    return;
-  }
 
-  const { data, error } =
-    await supabaseClient
+  let paymentLink = null;
+
+
+  /*
+    Sandbox conversion rate.
+
+    1 USD = 1 USDC
+
+    This is NOT a live exchange rate.
+    A real provider will be connected later.
+  */
+
+  const USDC_RATE = 1;
+
+
+  /* =========================
+     LOAD PAYMENT LINK
+  ========================= */
+
+  async function loadPaymentLink() {
+
+    if (!slug) {
+
+      showMessage(
+        "Payment link is missing.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    const {
+      data,
+      error
+    } = await supabaseClient
       .from("payment_links")
       .select("*")
       .eq("slug", slug)
       .eq("active", true)
-      .single();
-
-  if (error || !data) {
-
-    document.getElementById("title").textContent =
-      "Payment Link Not Found";
-
-    return;
-  }
-
-  paymentLink = data;
-
-  document.getElementById("title").textContent =
-    data.title;
-
-  document.getElementById("description").textContent =
-    data.description || "";
-
-  document.getElementById("amount").textContent =
-    "$" + Number(data.amount).toFixed(2);
-}
+      .maybeSingle();
 
 
-async function continuePayment() {
+    if (error) {
 
-  if (paymentSubmitting) {
-    return;
-  }
+      console.error(error);
 
-  const email =
-    document.getElementById("email").value.trim();
+      showMessage(
+        "Unable to load payment link.",
+        "error"
+      );
 
-  const cardName =
-    document.getElementById("cardName").value.trim();
-
-  const cardNumber =
-    document.getElementById("cardNumber").value.trim();
-
-  const expiry =
-    document.getElementById("expiry").value.trim();
-
-  const cvv =
-    document.getElementById("cvv").value.trim();
-
-  const message =
-    document.getElementById("message");
-
-  const button =
-    document.getElementById("payButton");
+      return;
+    }
 
 
-  if (!email) {
+    if (!data) {
 
-    message.className =
-      "message error";
+      showMessage(
+        "This payment link is unavailable.",
+        "error"
+      );
 
-    message.textContent =
-      "Please enter your email address.";
+      return;
+    }
 
-    return;
+
+    paymentLink = data;
+
+
+    document.getElementById(
+      "paymentTitle"
+    ).textContent =
+      paymentLink.title || "Payment";
+
+
+    document.getElementById(
+      "paymentDescription"
+    ).textContent =
+      paymentLink.description ||
+      "Secure payment through PayFlow.";
+
+
+    const amount =
+      Number(paymentLink.amount || 0);
+
+
+    document.getElementById(
+      "paymentAmount"
+    ).textContent =
+      "$" + amount.toFixed(2) + " USD";
+
+
+    updateConversion();
   }
 
 
-  if (!cardName || !cardNumber || !expiry || !cvv) {
+  /* =========================
+     PAYMENT METHOD
+  ========================= */
 
-    message.className =
-      "message error";
+  document
+    .querySelectorAll(
+      'input[name="paymentMethod"]'
+    )
+    .forEach(input => {
 
-    message.textContent =
-      "Please complete all card fields.";
+      input.addEventListener(
+        "change",
+        updatePaymentMethod
+      );
 
-    return;
+    });
+
+
+  function updatePaymentMethod() {
+
+    const selected =
+      document.querySelector(
+        'input[name="paymentMethod"]:checked'
+      ).value;
+
+
+    const cardFields =
+      document.getElementById(
+        "cardFields"
+      );
+
+    const usdcFields =
+      document.getElementById(
+        "usdcFields"
+      );
+
+    const conversionBox =
+      document.getElementById(
+        "conversionBox"
+      );
+
+    const payButton =
+      document.getElementById(
+        "payButton"
+      );
+
+
+    if (selected === "USDC") {
+
+      cardFields.style.display =
+        "none";
+
+      usdcFields.style.display =
+        "block";
+
+      conversionBox.style.display =
+        "block";
+
+      payButton.textContent =
+        "Continue with USDC Payment";
+
+    } else {
+
+      cardFields.style.display =
+        "block";
+
+      usdcFields.style.display =
+        "none";
+
+      conversionBox.style.display =
+        "none";
+
+      payButton.textContent =
+        "Continue with USD Payment";
+    }
+
   }
 
 
-  if (!paymentLink) {
+  /* =========================
+     CONVERSION DISPLAY
+  ========================= */
 
-    message.className =
-      "message error";
+  function updateConversion() {
 
-    message.textContent =
-      "Payment link is unavailable.";
+    if (!paymentLink) {
+      return;
+    }
 
-    return;
+
+    const usd =
+      Number(paymentLink.amount || 0);
+
+
+    const usdc =
+      usd / USDC_RATE;
+
+
+    document.getElementById(
+      "usdAmount"
+    ).textContent =
+      "$" + usd.toFixed(2);
+
+
+    document.getElementById(
+      "conversionRate"
+    ).textContent =
+      "1 USD = " +
+      USDC_RATE.toFixed(2) +
+      " USDC";
+
+
+    document.getElementById(
+      "usdcAmount"
+    ).textContent =
+      usdc.toFixed(2) +
+      " USDC";
   }
 
 
-  paymentSubmitting = true;
+  /* =========================
+     CREATE PAYMENT
+  ========================= */
 
-  button.disabled = true;
-
-  button.textContent =
-    "Processing...";
-
-
-  /*
-    Card information is NOT
-    sent to Supabase.
-  */
-
-  const { data, error } =
-    await supabaseClient
-      .from("payments")
-      .insert({
-
-        payment_link_id:
-          paymentLink.id,
-
-        user_id:
-          paymentLink.user_id,
-
-        amount:
-          paymentLink.amount,
-
-        currency:
-          "USD",
-
-        status:
-          "pending",
-
-        customer_email:
-          email
-
-      })
-      .select()
-      .single();
+  document
+    .getElementById("payButton")
+    .addEventListener(
+      "click",
+      createPayment
+    );
 
 
-  if (error) {
+  async function createPayment() {
 
-    console.error(error);
+    if (!paymentLink) {
 
-    paymentSubmitting = false;
+      showMessage(
+        "Payment link is unavailable.",
+        "error"
+      );
 
-    button.disabled = false;
+      return;
+    }
 
+
+    const method =
+      document.querySelector(
+        'input[name="paymentMethod"]:checked'
+      ).value;
+
+
+    const email =
+      document.getElementById(
+        "customerEmail"
+      ).value.trim();
+
+
+    if (!email) {
+
+      showMessage(
+        "Please enter your email.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    const amount =
+      Number(paymentLink.amount || 0);
+
+
+    if (amount <= 0) {
+
+      showMessage(
+        "Invalid payment amount.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    const button =
+      document.getElementById(
+        "payButton"
+      );
+
+
+    button.disabled = true;
     button.textContent =
-      "Pay Now";
+      "Creating Payment...";
 
-    message.className =
-      "message error";
 
-    message.textContent =
-      "Unable to create payment. Please try again.";
+    try {
 
-    return;
+      /*
+        USD:
+        Creates a pending USD payment record.
+
+        A real card processor will be connected
+        for the actual card charge.
+      */
+
+      if (method === "USD") {
+
+        const {
+          data,
+          error
+        } = await supabaseClient
+          .from("payments")
+          .insert({
+
+            payment_link_id:
+              paymentLink.id,
+
+            user_id:
+              paymentLink.user_id,
+
+            amount:
+              amount,
+
+            currency:
+              "USD",
+
+            status:
+              "pending",
+
+            customer_email:
+              email
+
+          })
+          .select()
+          .single();
+
+
+        if (error) {
+          throw error;
+        }
+
+
+        showMessage(
+          "USD payment created successfully. Card processing is ready to be connected.",
+          "success"
+        );
+
+
+        return;
+      }
+
+
+      /*
+        USDC:
+        Creates a pending USDC payment record.
+
+        The actual blockchain transfer is NOT
+        performed by this page.
+      */
+
+      if (method === "USDC") {
+
+        const walletAddress =
+          document
+            .getElementById(
+              "walletAddress"
+            )
+            .value.trim();
+
+
+        const ethereumAddress =
+          /^0x[a-fA-F0-9]{40}$/;
+
+
+        if (
+          !ethereumAddress.test(
+            walletAddress
+          )
+        ) {
+
+          showMessage(
+            "Please enter a valid Ethereum wallet address.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        const usdcAmount =
+          amount / USDC_RATE;
+
+
+        const {
+          data,
+          error
+        } = await supabaseClient
+          .from("payments")
+          .insert({
+
+            payment_link_id:
+              paymentLink.id,
+
+            user_id:
+              paymentLink.user_id,
+
+            amount:
+              usdcAmount,
+
+            currency:
+              "USDC",
+
+            status:
+              "pending",
+
+            customer_email:
+              email
+
+          })
+          .select()
+          .single();
+
+
+        if (error) {
+          throw error;
+        }
+
+
+        showMessage(
+          usdcAmount.toFixed(2) +
+          " USDC payment created successfully and is pending confirmation.",
+          "success"
+        );
+
+
+        return;
+      }
+
+
+    } catch (error) {
+
+      console.error(
+        "Payment error:",
+        error
+      );
+
+
+      showMessage(
+        error.message ||
+        "Unable to create payment.",
+        "error"
+      );
+
+    } finally {
+
+      button.disabled = false;
+
+      updatePaymentMethod();
+    }
+
   }
 
 
-  message.className =
-    "message success";
+  /* =========================
+     MESSAGE
+  ========================= */
 
-  message.innerHTML =
-    "Payment request created successfully.<br>" +
-    "Your payment is currently pending.";
+  function showMessage(
+    text,
+    type
+  ) {
 
-  button.textContent =
-    "Payment Created";
+    const message =
+      document.getElementById(
+        "message"
+      );
 
-}
+
+    message.textContent =
+      text;
 
 
-loadPaymentLink();
+    message.className =
+      "message " + type;
+
+
+    message.style.display =
+      "block";
+  }
+
+
+  /* =========================
+     START
+  ========================= */
+
+  loadPaymentLink();
 
 </script>
 
