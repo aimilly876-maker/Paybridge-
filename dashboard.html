@@ -17,90 +17,207 @@
 
     body {
       font-family: Arial, sans-serif;
-      background: #f5f7fb;
-      color: #222;
+      background: #f4f7fb;
+      color: #172033;
     }
 
     header {
       background: #111827;
       color: white;
-      padding: 18px 20px;
+      padding: 17px 22px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 20;
     }
 
     header h1 {
       font-size: 22px;
+      letter-spacing: .3px;
     }
 
-    header button {
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-mini {
+      font-size: 13px;
+      opacity: .8;
+      display: none;
+    }
+
+    .logout {
       background: #ef4444;
       border: none;
       color: white;
-      padding: 10px 15px;
-      border-radius: 7px;
+      padding: 9px 14px;
+      border-radius: 8px;
       cursor: pointer;
+      font-weight: bold;
     }
 
     .container {
-      max-width: 1000px;
-      margin: 25px auto;
-      padding: 0 15px;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px 16px 50px;
     }
 
     .welcome {
-      margin-bottom: 20px;
+      margin-bottom: 22px;
     }
 
     .welcome h2 {
+      font-size: 27px;
       margin-bottom: 6px;
+    }
+
+    .welcome p {
+      color: #64748b;
+    }
+
+    /* BALANCES */
+
+    .balance-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    .balance-card {
+      border-radius: 18px;
+      padding: 24px;
+      color: white;
+      min-height: 165px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(15,23,42,.12);
+    }
+
+    .usd-card {
+      background: linear-gradient(135deg, #111827, #273449);
+    }
+
+    .usdc-card {
+      background: linear-gradient(135deg, #14532d, #15803d);
+    }
+
+    .balance-card::after {
+      content: "";
+      position: absolute;
+      width: 130px;
+      height: 130px;
+      border: 25px solid rgba(255,255,255,.06);
+      border-radius: 50%;
+      right: -35px;
+      top: -35px;
+    }
+
+    .balance-label {
+      font-size: 14px;
+      opacity: .75;
+      margin-bottom: 9px;
+    }
+
+    .balance-amount {
+      font-size: 34px;
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+
+    .balance-sub {
+      font-size: 13px;
+      opacity: .75;
+    }
+
+    /* QUICK ACTIONS */
+
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .quick-btn {
+      background: white;
+      border: 1px solid #e2e8f0;
+      padding: 15px 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: bold;
+      color: #1e293b;
+      transition: .2s;
+    }
+
+    .quick-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,.08);
+    }
+
+    .quick-icon {
+      font-size: 22px;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    /* CARDS */
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
     }
 
     .card {
       background: white;
       padding: 22px;
-      border-radius: 12px;
+      border-radius: 16px;
       margin-bottom: 20px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      box-shadow: 0 4px 18px rgba(15,23,42,.06);
+      border: 1px solid #edf1f6;
     }
 
-    .balance-card {
-      background: #111827;
-      color: white;
+    .card h3 {
+      font-size: 18px;
+      margin-bottom: 5px;
     }
 
-    .balance-label {
-      font-size: 14px;
-      opacity: 0.8;
-      margin-bottom: 8px;
+    .card-description {
+      color: #64748b;
+      font-size: 13px;
+      margin-bottom: 18px;
     }
 
-    .amount {
-      font-size: 34px;
-      font-weight: bold;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-    }
+    /* FORMS */
 
     input,
     select {
       width: 100%;
-      padding: 12px;
+      padding: 12px 13px;
       margin-top: 7px;
-      margin-bottom: 15px;
+      margin-bottom: 14px;
       border: 1px solid #d1d5db;
-      border-radius: 7px;
+      border-radius: 9px;
       font-size: 15px;
+      background: white;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37,99,235,.1);
     }
 
     label {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: bold;
+      color: #334155;
     }
 
     button.primary {
@@ -109,9 +226,14 @@
       color: white;
       border: none;
       padding: 13px;
-      border-radius: 7px;
+      border-radius: 9px;
       font-size: 15px;
       cursor: pointer;
+      font-weight: bold;
+    }
+
+    button.primary:hover {
+      background: #1d4ed8;
     }
 
     button.primary:disabled {
@@ -119,33 +241,127 @@
       cursor: not-allowed;
     }
 
-    .withdraw-info {
-      background: #f3f4f6;
-      padding: 12px;
-      border-radius: 7px;
-      margin-bottom: 15px;
-      font-size: 14px;
+    button.secondary {
+      background: #eef2ff;
+      color: #3730a3;
+      border: none;
+      padding: 11px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
     }
 
-    .message {
-      padding: 12px;
-      border-radius: 7px;
-      margin-top: 12px;
-      display: none;
+    /* INFO BOX */
+
+    .info-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      padding: 13px;
+      border-radius: 9px;
+      margin-bottom: 15px;
+      font-size: 13px;
+      color: #475569;
+    }
+
+    .coming {
+      background: #fff7ed;
+      color: #9a3412;
+      border: 1px solid #fed7aa;
     }
 
     .success {
       background: #dcfce7;
       color: #166534;
+      border: 1px solid #bbf7d0;
     }
 
     .error {
       background: #fee2e2;
       color: #991b1b;
+      border: 1px solid #fecaca;
     }
 
+    .message {
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 12px;
+      display: none;
+      font-size: 14px;
+    }
+
+    /* PAYMENT LINKS */
+
+    .create-link-box {
+      background: #f8fafc;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 18px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .payment-link-item {
+      border: 1px solid #e5e7eb;
+      border-radius: 11px;
+      padding: 14px;
+      margin-bottom: 10px;
+    }
+
+    .payment-link-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .link-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .link-amount {
+      font-size: 13px;
+      color: #64748b;
+    }
+
+    .active-badge {
+      color: #166534;
+      background: #dcfce7;
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: bold;
+      height: fit-content;
+    }
+
+    .inactive-badge {
+      color: #991b1b;
+      background: #fee2e2;
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: bold;
+      height: fit-content;
+    }
+
+    .link-url {
+      background: #f1f5f9;
+      padding: 9px;
+      border-radius: 7px;
+      margin-top: 10px;
+      font-size: 12px;
+      word-break: break-all;
+      color: #475569;
+    }
+
+    .link-actions {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+    }
+
+    /* TRANSACTIONS */
+
     .transaction {
-      padding: 13px 0;
+      padding: 14px 0;
       border-bottom: 1px solid #e5e7eb;
       display: flex;
       justify-content: space-between;
@@ -160,16 +376,139 @@
       font-size: 13px;
       text-transform: capitalize;
       font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .status.pending {
+      color: #b45309;
+    }
+
+    .status.completed {
+      color: #15803d;
+    }
+
+    .status.failed {
+      color: #dc2626;
     }
 
     .empty {
       color: #6b7280;
       padding: 10px 0;
+      font-size: 14px;
     }
 
     .small {
       font-size: 13px;
       color: #6b7280;
+      margin-top: 4px;
+    }
+
+    /* MODAL */
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,.6);
+      z-index: 100;
+      padding: 20px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: white;
+      width: 100%;
+      max-width: 460px;
+      border-radius: 16px;
+      padding: 24px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .close {
+      border: none;
+      background: #f1f5f9;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    .deposit-option {
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      cursor: pointer;
+    }
+
+    .deposit-option:hover {
+      border-color: #2563eb;
+      background: #f8fafc;
+    }
+
+    .deposit-option strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .deposit-option span {
+      color: #64748b;
+      font-size: 13px;
+    }
+
+    @media (max-width: 800px) {
+      .balance-grid,
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .quick-actions {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .user-mini {
+        display: none;
+      }
+    }
+
+    @media (max-width: 500px) {
+      header {
+        padding: 15px;
+      }
+
+      header h1 {
+        font-size: 20px;
+      }
+
+      .container {
+        padding: 20px 12px 40px;
+      }
+
+      .welcome h2 {
+        font-size: 24px;
+      }
+
+      .balance-amount {
+        font-size: 29px;
+      }
+
+      .card {
+        padding: 17px;
+      }
+
+      .quick-btn {
+        font-size: 12px;
+      }
     }
   </style>
 </head>
@@ -178,33 +517,189 @@
 
 <header>
   <h1>PayFlow</h1>
-  <button onclick="logout()">Logout</button>
+
+  <div class="header-right">
+    <span class="user-mini" id="headerEmail"></span>
+    <button class="logout" onclick="logout()">Logout</button>
+  </div>
 </header>
 
 <div class="container">
 
   <div class="welcome">
     <h2>Dashboard</h2>
-    <p>Welcome, <span id="userEmail">Loading...</span></p>
+    <p>Welcome back, <strong id="userEmail">Loading...</strong></p>
   </div>
 
-  <!-- BALANCE -->
-  <div class="card balance-card">
-    <div class="balance-label">Available USDC Balance</div>
-    <div class="amount" id="balance">0.00 USDC</div>
+
+  <!-- BALANCES -->
+
+  <div class="balance-grid">
+
+    <div class="balance-card usd-card">
+      <div class="balance-label">
+        USD AVAILABLE BALANCE
+      </div>
+
+      <div class="balance-amount" id="usdBalance">
+        $0.00
+      </div>
+
+      <div class="balance-sub">
+        Available for payments and conversion
+      </div>
+    </div>
+
+
+    <div class="balance-card usdc-card">
+      <div class="balance-label">
+        USDC AVAILABLE BALANCE
+      </div>
+
+      <div class="balance-amount" id="usdcBalance">
+        0.00 USDC
+      </div>
+
+      <div class="balance-sub">
+        Available for crypto withdrawals
+      </div>
+    </div>
+
   </div>
+
+
+  <!-- QUICK ACTIONS -->
+
+  <div class="quick-actions">
+
+    <button class="quick-btn" onclick="openDeposit()">
+      <span class="quick-icon">💳</span>
+      Deposit
+    </button>
+
+    <button class="quick-btn" onclick="openConvert()">
+      <span class="quick-icon">🔄</span>
+      Convert
+    </button>
+
+    <button class="quick-btn" onclick="scrollToLinks()">
+      <span class="quick-icon">🔗</span>
+      Payment Links
+    </button>
+
+    <button class="quick-btn" onclick="scrollToWithdraw()">
+      <span class="quick-icon">💸</span>
+      Withdraw
+    </button>
+
+  </div>
+
 
   <div class="grid">
 
-    <!-- WITHDRAW -->
+    <!-- DEPOSIT -->
+
     <div class="card">
-      <h3>Withdraw USDC</h3>
 
-      <br>
+      <h3>Deposit Funds</h3>
 
-      <div class="withdraw-info">
-        Available to withdraw:
-        <strong id="withdrawBalance">0.00 USDC</strong>
+      <p class="card-description">
+        Add funds to your PayFlow wallet.
+      </p>
+
+      <div class="deposit-option" onclick="openCardDeposit()">
+        <strong>💳 Debit / Credit Card</strong>
+        <span>
+          Deposit USD using a debit or credit card.
+        </span>
+      </div>
+
+      <div class="deposit-option" onclick="openCryptoDeposit()">
+        <strong>🪙 Crypto Deposit</strong>
+        <span>
+          Deposit supported cryptocurrency to your PayFlow wallet.
+        </span>
+      </div>
+
+      <div class="info-box coming">
+        Card and blockchain processing are currently in setup/sandbox mode.
+      </div>
+
+    </div>
+
+
+    <!-- CONVERSION -->
+
+    <div class="card" id="convertSection">
+
+      <h3>USD ↔ USDC</h3>
+
+      <p class="card-description">
+        Convert between your USD and USDC balances.
+      </p>
+
+      <div class="info-box">
+        <strong>Sandbox conversion rate</strong><br>
+        1 USD = 1 USDC
+      </div>
+
+      <label for="convertDirection">
+        Conversion
+      </label>
+
+      <select id="convertDirection">
+        <option value="usd_usdc">
+          USD → USDC
+        </option>
+
+        <option value="usdc_usd">
+          USDC → USD
+        </option>
+      </select>
+
+      <label for="convertAmount">
+        Amount
+      </label>
+
+      <input
+        type="number"
+        id="convertAmount"
+        min="0.01"
+        step="0.01"
+        placeholder="Enter amount"
+      >
+
+      <button
+        class="primary"
+        id="convertButton"
+        onclick="convertFunds()"
+      >
+        Convert Funds
+      </button>
+
+      <div
+        id="convertMessage"
+        class="message"
+      ></div>
+
+    </div>
+
+
+    <!-- WITHDRAW -->
+
+    <div class="card" id="withdrawSection">
+
+      <h3>Withdraw</h3>
+
+      <p class="card-description">
+        Withdraw your USDC to an external Ethereum wallet.
+      </p>
+
+      <div class="info-box">
+        Available USDC:
+        <strong id="withdrawBalance">
+          0.00 USDC
+        </strong>
       </div>
 
       <form id="withdrawForm">
@@ -214,14 +709,21 @@
         </label>
 
         <select id="withdrawMethod" required>
-          <option value="">Select withdrawal method</option>
+
+          <option value="">
+            Select withdrawal method
+          </option>
+
           <option value="crypto">
             USDC — Ethereum (ERC-20)
           </option>
+
           <option value="bank">
             Bank — Coming Soon
           </option>
+
         </select>
+
 
         <label for="withdrawAmount">
           Amount (USDC)
@@ -236,6 +738,7 @@
           required
         >
 
+
         <label for="destinationAddress">
           USDC Destination Address
         </label>
@@ -247,6 +750,7 @@
           autocomplete="off"
           required
         >
+
 
         <button
           type="submit"
@@ -262,46 +766,301 @@
         ></div>
 
       </form>
+
     </div>
+
 
     <!-- PAYMENT LINKS -->
-    <div class="card">
+
+    <div class="card" id="linksSection">
+
       <h3>Payment Links</h3>
 
-      <br>
+      <p class="card-description">
+        Create links customers can use to pay you.
+      </p>
+
+
+      <div class="create-link-box">
+
+        <label for="linkTitle">
+          Payment Link Title
+        </label>
+
+        <input
+          type="text"
+          id="linkTitle"
+          placeholder="Example: Website Design"
+        >
+
+
+        <label for="linkAmount">
+          Amount (USD)
+        </label>
+
+        <input
+          type="number"
+          id="linkAmount"
+          min="0.01"
+          step="0.01"
+          placeholder="Example: 50.00"
+        >
+
+
+        <label for="linkDescription">
+          Description
+        </label>
+
+        <input
+          type="text"
+          id="linkDescription"
+          placeholder="Describe what the customer is paying for"
+        >
+
+
+        <button
+          class="primary"
+          id="createLinkButton"
+          onclick="createPaymentLink()"
+        >
+          Create Payment Link
+        </button>
+
+        <div
+          id="linkMessage"
+          class="message"
+        ></div>
+
+      </div>
+
 
       <div id="paymentLinks">
-        <p class="empty">Loading payment links...</p>
+        <p class="empty">
+          Loading payment links...
+        </p>
       </div>
+
     </div>
 
   </div>
+
 
   <!-- RECENT TRANSACTIONS -->
+
   <div class="card">
+
     <h3>Recent Transactions</h3>
 
-    <br>
+    <p class="card-description">
+      Your latest payments.
+    </p>
 
     <div id="transactions">
-      <p class="empty">Loading transactions...</p>
+      <p class="empty">
+        Loading transactions...
+      </p>
     </div>
+
   </div>
 
+
   <!-- WITHDRAWAL HISTORY -->
+
   <div class="card">
+
     <h3>Withdrawal History</h3>
 
-    <br>
+    <p class="card-description">
+      Your recent withdrawal requests.
+    </p>
 
     <div id="withdrawals">
-      <p class="empty">Loading withdrawals...</p>
+      <p class="empty">
+        Loading withdrawals...
+      </p>
     </div>
+
   </div>
 
 </div>
 
+
+<!-- DEPOSIT MODAL -->
+
+<div class="modal" id="depositModal">
+
+  <div class="modal-content">
+
+    <div class="modal-header">
+      <h3>Deposit Funds</h3>
+
+      <button
+        class="close"
+        onclick="closeModal('depositModal')"
+      >
+        ×
+      </button>
+    </div>
+
+    <div
+      class="deposit-option"
+      onclick="openCardDeposit()"
+    >
+      <strong>💳 Debit / Credit Card</strong>
+
+      <span>
+        Deposit USD with your card.
+      </span>
+    </div>
+
+    <div
+      class="deposit-option"
+      onclick="openCryptoDeposit()"
+    >
+      <strong>🪙 Crypto</strong>
+
+      <span>
+        Deposit cryptocurrency to your wallet.
+      </span>
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- CARD DEPOSIT MODAL -->
+
+<div class="modal" id="cardModal">
+
+  <div class="modal-content">
+
+    <div class="modal-header">
+
+      <h3>Card Deposit</h3>
+
+      <button
+        class="close"
+        onclick="closeModal('cardModal')"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <div class="info-box">
+      💳 Debit and credit card deposits will be processed
+      through a connected payment provider.
+    </div>
+
+    <label>
+      Deposit Amount (USD)
+    </label>
+
+    <input
+      type="number"
+      id="cardDepositAmount"
+      min="1"
+      step="0.01"
+      placeholder="Enter amount"
+    >
+
+    <button
+      class="primary"
+      onclick="startCardDeposit()"
+    >
+      Continue to Card Payment
+    </button>
+
+    <div
+      id="cardMessage"
+      class="message"
+    ></div>
+
+  </div>
+
+</div>
+
+
+<!-- CRYPTO DEPOSIT MODAL -->
+
+<div class="modal" id="cryptoModal">
+
+  <div class="modal-content">
+
+    <div class="modal-header">
+
+      <h3>Crypto Deposit</h3>
+
+      <button
+        class="close"
+        onclick="closeModal('cryptoModal')"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <div class="info-box">
+      Send only supported assets and networks to the
+      displayed deposit address.
+    </div>
+
+    <label>
+      Asset
+    </label>
+
+    <select id="depositAsset">
+
+      <option value="USDC">
+        USDC
+      </option>
+
+    </select>
+
+
+    <label>
+      Network
+    </label>
+
+    <select id="depositNetwork">
+
+      <option value="ethereum">
+        Ethereum (ERC-20)
+      </option>
+
+    </select>
+
+
+    <div class="info-box coming">
+
+      Deposit address integration is ready for the next
+      crypto provider/wallet connection.
+
+    </div>
+
+    <button
+      class="primary"
+      onclick="showCryptoDepositMessage()"
+    >
+      Show Deposit Instructions
+    </button>
+
+    <div
+      id="cryptoMessage"
+      class="message"
+    ></div>
+
+  </div>
+
+</div>
+
+
 <script>
+
+  /* =========================
+     SUPABASE
+  ========================= */
 
   const SUPABASE_URL =
     "https://qfmczhdnmbntjfioyzjc.supabase.co";
@@ -315,7 +1074,13 @@
       SUPABASE_PUBLISHABLE_KEY
     );
 
+
   let currentUser = null;
+
+  let usdWallet = null;
+
+  let usdcWallet = null;
+
   let currentWallet = null;
 
 
@@ -331,27 +1096,40 @@
     } = await supabaseClient.auth.getUser();
 
     if (error || !data.user) {
-      window.location.href = "Login.html";
+
+      window.location.href =
+        "Login.html";
+
       return;
     }
 
-    currentUser = data.user;
+    currentUser =
+      data.user;
 
-    document.getElementById("userEmail").textContent =
+    document.getElementById("userEmail")
+      .textContent =
       currentUser.email || "";
 
-    await loadWallet();
+    document.getElementById("headerEmail")
+      .textContent =
+      currentUser.email || "";
+
+
+    await loadWallets();
+
     await loadPaymentLinks();
+
     await loadPayments();
+
     await loadWithdrawals();
   }
 
 
   /* =========================
-     LOAD USDC WALLET
+     LOAD WALLETS
   ========================= */
 
-  async function loadWallet() {
+  async function loadWallets() {
 
     const {
       data,
@@ -359,61 +1137,96 @@
     } = await supabaseClient
       .from("wallets")
       .select("*")
-      .eq("user_id", currentUser.id)
-      .eq("currency", "USDC")
-      .maybeSingle();
+      .eq("user_id", currentUser.id);
+
 
     if (error) {
 
-      console.error("Wallet error:", error);
+      console.error(
+        "Wallet error:",
+        error
+      );
 
-      currentWallet = null;
+      usdWallet = null;
+      usdcWallet = null;
 
-      document.getElementById("balance").textContent =
-        "0.00 USDC";
-
-      document.getElementById("withdrawBalance").textContent =
-        "0.00 USDC";
-
-      return;
-    }
-
-    if (!data) {
-
-      console.log("No USDC wallet found.");
-
-      currentWallet = null;
-
-      document.getElementById("balance").textContent =
-        "0.00 USDC";
-
-      document.getElementById("withdrawBalance").textContent =
-        "0.00 USDC";
+      updateBalances();
 
       return;
     }
 
-    currentWallet = data;
 
-    const balance =
-      Number(data.available_balance || 0);
+    usdWallet =
+      (data || []).find(
+        wallet =>
+          String(wallet.currency)
+            .toUpperCase() === "USD"
+      ) || null;
 
-    document.getElementById("balance").textContent =
-      balance.toFixed(2) + " USDC";
 
-    document.getElementById("withdrawBalance").textContent =
-      balance.toFixed(2) + " USDC";
+    usdcWallet =
+      (data || []).find(
+        wallet =>
+          String(wallet.currency)
+            .toUpperCase() === "USDC"
+      ) || null;
+
+
+    /*
+      Keep the existing USDC withdrawal
+      system connected to the USDC wallet.
+    */
+
+    currentWallet =
+      usdcWallet;
+
+
+    updateBalances();
   }
 
 
   /* =========================
-     LOAD PAYMENT LINKS
+     UPDATE BALANCES
+  ========================= */
+
+  function updateBalances() {
+
+    const usd =
+      Number(
+        usdWallet?.available_balance || 0
+      );
+
+    const usdc =
+      Number(
+        usdcWallet?.available_balance || 0
+      );
+
+
+    document.getElementById("usdBalance")
+      .textContent =
+      "$" + usd.toFixed(2);
+
+
+    document.getElementById("usdcBalance")
+      .textContent =
+      usdc.toFixed(2) + " USDC";
+
+
+    document.getElementById("withdrawBalance")
+      .textContent =
+      usdc.toFixed(2) + " USDC";
+  }
+
+
+  /* =========================
+     PAYMENT LINKS
   ========================= */
 
   async function loadPaymentLinks() {
 
     const container =
       document.getElementById("paymentLinks");
+
 
     const {
       data,
@@ -426,15 +1239,20 @@
         ascending: false
       });
 
+
     if (error) {
 
-      console.error("Payment links error:", error);
+      console.error(
+        "Payment links error:",
+        error
+      );
 
       container.innerHTML =
         '<p class="empty">Unable to load payment links.</p>';
 
       return;
     }
+
 
     if (!data || data.length === 0) {
 
@@ -444,30 +1262,269 @@
       return;
     }
 
+
     container.innerHTML = "";
+
 
     data.forEach(link => {
 
       const item =
         document.createElement("div");
 
-      item.className = "transaction";
+      item.className =
+        "payment-link-item";
+
+
+      const safeTitle =
+        escapeHtml(
+          link.title ||
+          "Payment Link"
+        );
+
+
+      const safeDescription =
+        escapeHtml(
+          link.description || ""
+        );
+
+
+      const amount =
+        Number(
+          link.amount || 0
+        ).toFixed(2);
+
+
+      const statusClass =
+        link.active
+          ? "active-badge"
+          : "inactive-badge";
+
+
+      const statusText =
+        link.active
+          ? "Active"
+          : "Inactive";
+
+
+      const slug =
+        link.slug || "";
+
+
+      const paymentUrl =
+        window.location.origin +
+        window.location.pathname
+          .replace(
+            "Dashboard.html",
+            "Pay.html"
+          ) +
+        "?slug=" +
+        encodeURIComponent(slug);
+
 
       item.innerHTML = `
-        <div>
-          <strong>${escapeHtml(link.title || "Payment Link")}</strong>
-          <div class="small">
-            ${Number(link.amount || 0).toFixed(2)} USD
+
+        <div class="payment-link-top">
+
+          <div>
+
+            <div class="link-title">
+              ${safeTitle}
+            </div>
+
+            <div class="link-amount">
+              $${amount} USD
+            </div>
+
+            ${
+              safeDescription
+                ? `<div class="small">${safeDescription}</div>`
+                : ""
+            }
+
           </div>
+
+          <div class="${statusClass}">
+            ${statusText}
+          </div>
+
         </div>
 
-        <div class="status">
-          ${link.active ? "Active" : "Inactive"}
+
+        <div class="link-url">
+          ${escapeHtml(paymentUrl)}
+        </div>
+
+
+        <div class="link-actions">
+
+          <button
+            class="secondary"
+            onclick="copyLink('${escapeJs(paymentUrl)}')"
+          >
+            Copy Link
+          </button>
+
+          <button
+            class="secondary"
+            onclick="openPaymentLink('${escapeJs(paymentUrl)}')"
+          >
+            Open
+          </button>
+
         </div>
       `;
 
+
       container.appendChild(item);
+
     });
+
+  }
+
+
+  /* =========================
+     CREATE PAYMENT LINK
+  ========================= */
+
+  async function createPaymentLink() {
+
+    const title =
+      document.getElementById("linkTitle")
+        .value
+        .trim();
+
+
+    const amount =
+      Number(
+        document.getElementById("linkAmount")
+          .value
+      );
+
+
+    const description =
+      document.getElementById("linkDescription")
+        .value
+        .trim();
+
+
+    if (!title) {
+
+      showLinkMessage(
+        "Please enter a payment link title.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    if (!amount || amount <= 0) {
+
+      showLinkMessage(
+        "Please enter a valid payment amount.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    const button =
+      document.getElementById(
+        "createLinkButton"
+      );
+
+
+    button.disabled = true;
+
+    button.textContent =
+      "Creating...";
+
+
+    try {
+
+      const slug =
+        generateSlug(title);
+
+
+      const {
+        data,
+        error
+      } = await supabaseClient
+        .from("payment_links")
+        .insert({
+
+          title:
+            title,
+
+          amount:
+            amount,
+
+          description:
+            description,
+
+          user_id:
+            currentUser.id,
+
+          active:
+            true,
+
+          slug:
+            slug
+
+        })
+        .select()
+        .single();
+
+
+      if (error) {
+
+        console.error(
+          "Create payment link error:",
+          error
+        );
+
+        throw error;
+      }
+
+
+      document.getElementById("linkTitle")
+        .value = "";
+
+      document.getElementById("linkAmount")
+        .value = "";
+
+      document.getElementById("linkDescription")
+        .value = "";
+
+
+      showLinkMessage(
+        "Payment link created successfully.",
+        "success"
+      );
+
+
+      await loadPaymentLinks();
+
+
+    } catch (error) {
+
+      console.error(error);
+
+      showLinkMessage(
+        error.message ||
+        "Unable to create payment link.",
+        "error"
+      );
+
+    } finally {
+
+      button.disabled = false;
+
+      button.textContent =
+        "Create Payment Link";
+    }
+
   }
 
 
@@ -478,7 +1535,10 @@
   async function loadPayments() {
 
     const container =
-      document.getElementById("transactions");
+      document.getElementById(
+        "transactions"
+      );
+
 
     const {
       data,
@@ -492,15 +1552,20 @@
       })
       .limit(20);
 
+
     if (error) {
 
-      console.error("Payments error:", error);
+      console.error(
+        "Payments error:",
+        error
+      );
 
       container.innerHTML =
         '<p class="empty">Unable to load transactions.</p>';
 
       return;
     }
+
 
     if (!data || data.length === 0) {
 
@@ -510,33 +1575,64 @@
       return;
     }
 
+
     container.innerHTML = "";
+
 
     data.forEach(payment => {
 
       const item =
         document.createElement("div");
 
-      item.className = "transaction";
+      item.className =
+        "transaction";
+
 
       const amount =
-        Number(payment.amount || 0).toFixed(2);
+        Number(
+          payment.amount || 0
+        ).toFixed(2);
+
+
+      const currency =
+        escapeHtml(
+          payment.currency ||
+          "USD"
+        );
+
+
+      const status =
+        escapeHtml(
+          payment.status ||
+          "pending"
+        );
+
 
       item.innerHTML = `
+
         <div>
-          <strong>Payment Received</strong>
+
+          <strong>
+            Payment Received
+          </strong>
+
           <div class="small">
-            ${amount} ${escapeHtml(payment.currency || "USD")}
+            ${amount} ${currency}
           </div>
+
         </div>
 
-        <div class="status">
-          ${escapeHtml(payment.status || "pending")}
+        <div class="status ${status}">
+          ${status}
         </div>
+
       `;
 
+
       container.appendChild(item);
+
     });
+
   }
 
 
@@ -547,7 +1643,10 @@
   async function loadWithdrawals() {
 
     const container =
-      document.getElementById("withdrawals");
+      document.getElementById(
+        "withdrawals"
+      );
+
 
     const {
       data,
@@ -560,15 +1659,20 @@
         ascending: false
       });
 
+
     if (error) {
 
-      console.error("Withdrawals error:", error);
+      console.error(
+        "Withdrawals error:",
+        error
+      );
 
       container.innerHTML =
         '<p class="empty">Unable to load withdrawal history.</p>';
 
       return;
     }
+
 
     if (!data || data.length === 0) {
 
@@ -578,42 +1682,71 @@
       return;
     }
 
+
     container.innerHTML = "";
+
 
     data.forEach(withdrawal => {
 
       const item =
         document.createElement("div");
 
-      item.className = "transaction";
+      item.className =
+        "transaction";
+
 
       const amount =
-        Number(withdrawal.amount || 0).toFixed(2);
+        Number(
+          withdrawal.amount || 0
+        ).toFixed(2);
+
 
       const currency =
-        withdrawal.currency || "USDC";
+        escapeHtml(
+          withdrawal.currency ||
+          "USDC"
+        );
+
 
       const network =
-        withdrawal.network || "ethereum";
+        escapeHtml(
+          withdrawal.network ||
+          "ethereum"
+        );
+
+
+      const status =
+        escapeHtml(
+          withdrawal.status ||
+          "pending"
+        );
+
 
       item.innerHTML = `
+
         <div>
+
           <strong>
-            ${amount} ${escapeHtml(currency)}
+            ${amount} ${currency}
           </strong>
 
           <div class="small">
-            ${escapeHtml(network)}
+            ${network}
           </div>
+
         </div>
 
-        <div class="status">
-          ${escapeHtml(withdrawal.status || "pending")}
+        <div class="status ${status}">
+          ${status}
         </div>
+
       `;
 
+
       container.appendChild(item);
+
     });
+
   }
 
 
@@ -623,177 +1756,647 @@
 
   document
     .getElementById("withdrawForm")
-    .addEventListener("submit", async function(event) {
+    .addEventListener(
+      "submit",
+      async function(event) {
 
-      event.preventDefault();
+        event.preventDefault();
 
-      const message =
-        document.getElementById("withdrawMessage");
 
-      const button =
-        document.getElementById("withdrawButton");
+        const message =
+          document.getElementById(
+            "withdrawMessage"
+          );
 
-      message.style.display = "none";
-      message.className = "message";
 
-      if (!currentWallet) {
+        const button =
+          document.getElementById(
+            "withdrawButton"
+          );
 
-        showMessage(
-          "USDC wallet not found. Please make sure your USDC wallet exists.",
-          "error"
-        );
 
-        return;
-      }
+        message.style.display =
+          "none";
 
-      const method =
-        document.getElementById("withdrawMethod").value;
 
-      const amount =
-        Number(
-          document.getElementById("withdrawAmount").value
-        );
+        message.className =
+          "message";
 
-      const destination =
-        document
-          .getElementById("destinationAddress")
+
+        if (!currentWallet) {
+
+          showMessage(
+            "USDC wallet not found. Please make sure your USDC wallet exists.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        const method =
+          document.getElementById(
+            "withdrawMethod"
+          ).value;
+
+
+        const amount =
+          Number(
+            document.getElementById(
+              "withdrawAmount"
+            ).value
+          );
+
+
+        const destination =
+          document.getElementById(
+            "destinationAddress"
+          )
           .value
           .trim();
 
-      if (method !== "crypto") {
 
-        showMessage(
-          "Bank withdrawals are coming soon. Please select USDC — Ethereum (ERC-20).",
-          "error"
-        );
+        if (method !== "crypto") {
 
-        return;
-      }
-
-      if (!amount || amount <= 0) {
-
-        showMessage(
-          "Please enter a valid USDC amount.",
-          "error"
-        );
-
-        return;
-      }
-
-      const availableBalance =
-        Number(currentWallet.available_balance || 0);
-
-      if (amount > availableBalance) {
-
-        showMessage(
-          "Insufficient USDC balance.",
-          "error"
-        );
-
-        return;
-      }
-
-      const ethereumAddress =
-        /^0x[a-fA-F0-9]{40}$/;
-
-      if (!ethereumAddress.test(destination)) {
-
-        showMessage(
-          "Please enter a valid Ethereum (ERC-20) address.",
-          "error"
-        );
-
-        return;
-      }
-
-      button.disabled = true;
-      button.textContent = "Processing...";
-
-      try {
-
-        const {
-          data,
-          error
-        } = await supabaseClient.rpc(
-          "request_withdrawal",
-          {
-            p_wallet_id:
-              currentWallet.id,
-
-            p_amount:
-              amount,
-
-            p_method:
-              "crypto",
-
-            p_currency:
-              "USDC",
-
-            p_destination_address:
-              destination,
-
-            p_network:
-              "ethereum"
-          }
-        );
-
-        if (error) {
-
-          console.error(
-            "Withdrawal RPC error:",
-            error
+          showMessage(
+            "Bank withdrawals are coming soon. Please select USDC — Ethereum (ERC-20).",
+            "error"
           );
 
-          throw error;
+          return;
         }
 
-        showMessage(
-          "USDC withdrawal request created successfully.",
-          "success"
-        );
 
-        document
-          .getElementById("withdrawForm")
-          .reset();
+        if (!amount || amount <= 0) {
 
-        await loadWallet();
-        await loadWithdrawals();
+          showMessage(
+            "Please enter a valid USDC amount.",
+            "error"
+          );
 
-      } catch (error) {
+          return;
+        }
 
-        console.error(error);
 
-        showMessage(
-          error.message ||
-          "Unable to create withdrawal request.",
-          "error"
-        );
+        const availableBalance =
+          Number(
+            currentWallet.available_balance ||
+            0
+          );
 
-      } finally {
 
-        button.disabled = false;
+        if (amount > availableBalance) {
+
+          showMessage(
+            "Insufficient USDC balance.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        const ethereumAddress =
+          /^0x[a-fA-F0-9]{40}$/;
+
+
+        if (
+          !ethereumAddress.test(
+            destination
+          )
+        ) {
+
+          showMessage(
+            "Please enter a valid Ethereum (ERC-20) address.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        button.disabled = true;
+
         button.textContent =
-          "Request USDC Withdrawal";
-      }
+          "Processing...";
 
-    });
+
+        try {
+
+          const {
+            data,
+            error
+          } = await supabaseClient.rpc(
+            "request_withdrawal",
+            {
+
+              p_wallet_id:
+                currentWallet.id,
+
+              p_amount:
+                amount,
+
+              p_method:
+                "crypto",
+
+              p_currency:
+                "USDC",
+
+              p_destination_address:
+                destination,
+
+              p_network:
+                "ethereum"
+
+            }
+          );
+
+
+          if (error) {
+
+            console.error(
+              "Withdrawal RPC error:",
+              error
+            );
+
+            throw error;
+          }
+
+
+          showMessage(
+            "USDC withdrawal request created successfully.",
+            "success"
+          );
+
+
+          document
+            .getElementById(
+              "withdrawForm"
+            )
+            .reset();
+
+
+          await loadWallets();
+
+          await loadWithdrawals();
+
+
+        } catch (error) {
+
+          console.error(error);
+
+          showMessage(
+            error.message ||
+            "Unable to create withdrawal request.",
+            "error"
+          );
+
+        } finally {
+
+          button.disabled = false;
+
+          button.textContent =
+            "Request USDC Withdrawal";
+        }
+
+      }
+    );
 
 
   /* =========================
-     SHOW MESSAGE
+     CONVERSION
   ========================= */
 
-  function showMessage(text, type) {
+  async function convertFunds() {
+
+    const direction =
+      document.getElementById(
+        "convertDirection"
+      ).value;
+
+
+    const amount =
+      Number(
+        document.getElementById(
+          "convertAmount"
+        ).value
+      );
+
+
+    if (!amount || amount <= 0) {
+
+      showConvertMessage(
+        "Please enter a valid amount.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    /*
+      This is intentionally a SANDBOX
+      conversion.
+
+      It does not move real money yet.
+      A real USD/USDC provider will be
+      connected later.
+    */
+
+    const sourceWallet =
+      direction === "usd_usdc"
+        ? usdWallet
+        : usdcWallet;
+
+
+    if (!sourceWallet) {
+
+      showConvertMessage(
+        "The required wallet was not found.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    const available =
+      Number(
+        sourceWallet.available_balance ||
+        0
+      );
+
+
+    if (amount > available) {
+
+      showConvertMessage(
+        "Insufficient balance for this conversion.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    showConvertMessage(
+      "Sandbox conversion is ready, but real USD ↔ USDC conversion requires a connected conversion provider.",
+      "success"
+    );
+
+  }
+
+
+  /* =========================
+     DEPOSIT UI
+  ========================= */
+
+  function openDeposit() {
+
+    document.getElementById(
+      "depositModal"
+    ).style.display =
+      "flex";
+
+  }
+
+
+  function openCardDeposit() {
+
+    closeModal(
+      "depositModal"
+    );
+
+    document.getElementById(
+      "cardModal"
+    ).style.display =
+      "flex";
+
+  }
+
+
+  function openCryptoDeposit() {
+
+    closeModal(
+      "depositModal"
+    );
+
+    document.getElementById(
+      "cryptoModal"
+    ).style.display =
+      "flex";
+
+  }
+
+
+  function startCardDeposit() {
+
+    const amount =
+      Number(
+        document.getElementById(
+          "cardDepositAmount"
+        ).value
+      );
+
+
+    if (!amount || amount <= 0) {
+
+      showCardMessage(
+        "Please enter a valid deposit amount.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    showCardMessage(
+      "Card processing is currently in setup mode. A live card processor must be connected before real deposits can be accepted.",
+      "success"
+    );
+
+  }
+
+
+  function showCryptoDepositMessage() {
+
+    showCryptoMessage(
+      "Crypto deposit processing is currently in setup mode. A live blockchain wallet/provider must be connected before real deposits can be accepted.",
+      "success"
+    );
+
+  }
+
+
+  /* =========================
+     MODALS
+  ========================= */
+
+  function closeModal(id) {
+
+    document.getElementById(id)
+      .style.display =
+      "none";
+
+  }
+
+
+  window.addEventListener(
+    "click",
+    function(event) {
+
+      document
+        .querySelectorAll(".modal")
+        .forEach(modal => {
+
+          if (
+            event.target === modal
+          ) {
+
+            modal.style.display =
+              "none";
+
+          }
+
+        });
+
+    }
+  );
+
+
+  /* =========================
+     MESSAGES
+  ========================= */
+
+  function showMessage(
+    text,
+    type
+  ) {
 
     const message =
-      document.getElementById("withdrawMessage");
+      document.getElementById(
+        "withdrawMessage"
+      );
 
-    message.textContent = text;
+
+    message.textContent =
+      text;
+
 
     message.className =
       "message " + type;
 
-    message.style.display = "block";
+
+    message.style.display =
+      "block";
+
+  }
+
+
+  function showLinkMessage(
+    text,
+    type
+  ) {
+
+    const message =
+      document.getElementById(
+        "linkMessage"
+      );
+
+
+    message.textContent =
+      text;
+
+
+    message.className =
+      "message " + type;
+
+
+    message.style.display =
+      "block";
+
+  }
+
+
+  function showConvertMessage(
+    text,
+    type
+  ) {
+
+    const message =
+      document.getElementById(
+        "convertMessage"
+      );
+
+
+    message.textContent =
+      text;
+
+
+    message.className =
+      "message " + type;
+
+
+    message.style.display =
+      "block";
+
+  }
+
+
+  function showCardMessage(
+    text,
+    type
+  ) {
+
+    const message =
+      document.getElementById(
+        "cardMessage"
+      );
+
+
+    message.textContent =
+      text;
+
+
+    message.className =
+      "message " + type;
+
+
+    message.style.display =
+      "block";
+
+  }
+
+
+  function showCryptoMessage(
+    text,
+    type
+  ) {
+
+    const message =
+      document.getElementById(
+        "cryptoMessage"
+      );
+
+
+    message.textContent =
+      text;
+
+
+    message.className =
+      "message " + type;
+
+
+    message.style.display =
+      "block";
+
+  }
+
+
+  /* =========================
+     PAYMENT LINK HELPERS
+  ========================= */
+
+  function generateSlug(title) {
+
+    const base =
+      title
+        .toLowerCase()
+        .replace(
+          /[^a-z0-9]+/g,
+          "-"
+        )
+        .replace(
+          /^-+|-+$/g,
+          ""
+        );
+
+
+    const random =
+      Math.random()
+        .toString(36)
+        .substring(
+          2,
+          8
+        );
+
+
+    return (
+      base ||
+      "payment"
+    ) +
+      "-" +
+      random;
+  }
+
+
+  async function copyLink(url) {
+
+    try {
+
+      await navigator.clipboard.writeText(
+        url
+      );
+
+      alert(
+        "Payment link copied!"
+      );
+
+    } catch (error) {
+
+      prompt(
+        "Copy this payment link:",
+        url
+      );
+
+    }
+
+  }
+
+
+  function openPaymentLink(url) {
+
+    window.open(
+      url,
+      "_blank"
+    );
+
+  }
+
+
+  /* =========================
+     NAVIGATION
+  ========================= */
+
+  function scrollToLinks() {
+
+    document.getElementById(
+      "linksSection"
+    ).scrollIntoView({
+      behavior: "smooth"
+    });
+
+  }
+
+
+  function scrollToWithdraw() {
+
+    document.getElementById(
+      "withdrawSection"
+    ).scrollIntoView({
+      behavior: "smooth"
+    });
+
+  }
+
+
+  function openConvert() {
+
+    document.getElementById(
+      "convertSection"
+    ).scrollIntoView({
+      behavior: "smooth"
+    });
+
   }
 
 
@@ -807,26 +2410,63 @@
 
     window.location.href =
       "Login.html";
+
   }
 
 
   /* =========================
-     SECURITY / HTML ESCAPE
+     SECURITY
   ========================= */
 
   function escapeHtml(value) {
 
     return String(value)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+
+      .replace(
+        /&/g,
+        "&amp;"
+      )
+
+      .replace(
+        /</g,
+        "&lt;"
+      )
+
+      .replace(
+        />/g,
+        "&gt;"
+      )
+
+      .replace(
+        /"/g,
+        "&quot;"
+      )
+
+      .replace(
+        /'/g,
+        "&#039;"
+      );
+
+  }
+
+
+  function escapeJs(value) {
+
+    return String(value)
+      .replace(
+        /\\/g,
+        "\\\\"
+      )
+      .replace(
+        /'/g,
+        "\\'"
+      );
+
   }
 
 
   /* =========================
-     START DASHBOARD
+     START
   ========================= */
 
   checkUser();
