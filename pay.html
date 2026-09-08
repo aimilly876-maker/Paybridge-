@@ -260,6 +260,7 @@ textarea {
   </div>
 
   <div class="cards">
+
     <div class="card">
       <h3>Balance</h3>
       <div class="amount" id="balance">$0.00</div>
@@ -279,18 +280,35 @@ textarea {
       <h3>Transactions</h3>
       <div class="amount" id="transactionCount">0</div>
     </div>
+
   </div>
 
   <div class="actions">
-    <button class="action" onclick="showCreateLink()">🔗 Create Payment Link</button>
-    <button class="action" onclick="document.getElementById('linksSection').scrollIntoView()">📋 Payment Links</button>
-    <button class="action" onclick="document.getElementById('transactionsSection').scrollIntoView()">💳 Transactions</button>
+
+    <button class="action" onclick="showCreateLink()">
+      🔗 Create Payment Link
+    </button>
+
+    <button
+      class="action"
+      onclick="document.getElementById('linksSection').scrollIntoView()">
+      📋 Payment Links
+    </button>
+
+    <button
+      class="action"
+      onclick="document.getElementById('transactionsSection').scrollIntoView()">
+      💳 Transactions
+    </button>
+
   </div>
 
   <div class="section" id="createSection">
+
     <h2>Create Payment Link</h2>
 
     <form id="linkForm">
+
       <input
         type="text"
         id="title"
@@ -309,8 +327,8 @@ textarea {
 
       <textarea
         id="description"
-        placeholder="Description (optional)"
-      ></textarea>
+        placeholder="Description (optional)">
+      </textarea>
 
       <input
         type="text"
@@ -322,33 +340,46 @@ textarea {
       <button class="primary" type="submit">
         Create Payment Link
       </button>
+
     </form>
 
     <div class="message" id="formMessage"></div>
+
   </div>
 
   <div class="section" id="linksSection">
+
     <h2>Payment Links</h2>
+
     <div id="linksList">
-      <div class="empty">Loading payment links...</div>
+      <div class="empty">
+        Loading payment links...
+      </div>
     </div>
+
   </div>
 
   <div class="section" id="transactionsSection">
+
     <h2>Recent Transactions</h2>
+
     <div id="transactionsList">
-      <div class="empty">Loading transactions...</div>
+      <div class="empty">
+        Loading transactions...
+      </div>
     </div>
+
   </div>
 
 </div>
 
 <script>
 
-const SUPABASE_URL = "https://qfmczhdnmbntjfioyzjc.supabase.co";
+const SUPABASE_URL =
+  "https://qfmczhdnmbntjfioyzjc.supabase.co";
 
 const SUPABASE_PUBLISHABLE_KEY =
-"sb_publishable_vyPMYAngU34c2YHkTjt_ZA_MVet1HmZ";
+  "sb_publishable_vyPMYAngU34c2YHkTjt_ZA_MVet1HmZ";
 
 const supabaseClient = supabase.createClient(
   SUPABASE_URL,
@@ -357,13 +388,18 @@ const supabaseClient = supabase.createClient(
 
 let currentUser = null;
 
+
+/* CHECK LOGIN */
+
 async function checkUser() {
 
   const { data, error } =
     await supabaseClient.auth.getUser();
 
   if (error || !data.user) {
-    window.location.href = "login.html";
+
+    window.location.href = "Login.html";
+
     return;
   }
 
@@ -376,26 +412,40 @@ async function checkUser() {
   await loadPayments();
 }
 
+
+/* LOAD PAYMENT LINKS */
+
 async function loadPaymentLinks() {
 
-  const { data, error } = await supabaseClient
-    .from("payment_links")
-    .select("*")
-    .eq("user_id", currentUser.id)
-    .order("created_at", { ascending: false });
+  const { data, error } =
+    await supabaseClient
+      .from("payment_links")
+      .select("*")
+      .eq("user_id", currentUser.id)
+      .order("created_at", { ascending: false });
 
-  const list = document.getElementById("linksList");
+  const list =
+    document.getElementById("linksList");
 
   if (error) {
+
     list.innerHTML =
-      `<div class="empty">Unable to load payment links.</div>`;
+      `<div class="empty">
+        Unable to load payment links.
+      </div>`;
+
     console.error(error);
+
     return;
   }
 
   if (!data || data.length === 0) {
+
     list.innerHTML =
-      `<div class="empty">You haven't created any payment links yet.</div>`;
+      `<div class="empty">
+        You haven't created any payment links yet.
+      </div>`;
+
     return;
   }
 
@@ -403,16 +453,26 @@ async function loadPaymentLinks() {
 
   data.forEach(link => {
 
-    const publicUrl =
-  window.location.origin +
-  "/Paybridge-/Pay.html?slug=" +
-  encodeURIComponent(link.slug);
+    /*
+      IMPORTANT:
+      This is the corrected PayFlow payment URL.
+    */
 
-    const item = document.createElement("div");
+    const publicUrl =
+      window.location.origin +
+      "/Paybridge-/Pay.html?slug=" +
+      encodeURIComponent(link.slug);
+
+    const item =
+      document.createElement("div");
+
     item.className = "link-item";
 
     item.innerHTML = `
-      <div class="link-title">${escapeHtml(link.title)}</div>
+
+      <div class="link-title">
+        ${escapeHtml(link.title)}
+      </div>
 
       <div>
         $${Number(link.amount).toFixed(2)}
@@ -440,19 +500,26 @@ async function loadPaymentLinks() {
     `;
 
     list.appendChild(item);
+
   });
 }
 
+
+/* LOAD PAYMENTS */
+
 async function loadPayments() {
 
-  const { data, error } = await supabaseClient
-    .from("payments")
-    .select("*")
-    .eq("user_id", currentUser.id)
-    .order("created_at", { ascending: false });
+  const { data, error } =
+    await supabaseClient
+      .from("payments")
+      .select("*")
+      .eq("user_id", currentUser.id)
+      .order("created_at", { ascending: false });
 
   if (error) {
+
     console.error(error);
+
     return;
   }
 
@@ -462,11 +529,15 @@ async function loadPayments() {
   data.forEach(payment => {
 
     if (payment.status === "paid") {
+
       received += Number(payment.amount);
+
     }
 
     if (payment.status === "pending") {
+
       pending += Number(payment.amount);
+
     }
 
   });
@@ -487,8 +558,12 @@ async function loadPayments() {
     document.getElementById("transactionsList");
 
   if (!data || data.length === 0) {
+
     list.innerHTML =
-      `<div class="empty">No transactions yet.</div>`;
+      `<div class="empty">
+        No transactions yet.
+      </div>`;
+
     return;
   }
 
@@ -496,90 +571,130 @@ async function loadPayments() {
 
   data.slice(0, 10).forEach(payment => {
 
-    const item = document.createElement("div");
+    const item =
+      document.createElement("div");
 
     item.className = "transaction";
 
     item.innerHTML = `
-      <strong>$${Number(payment.amount).toFixed(2)}</strong>
+
+      <strong>
+        $${Number(payment.amount).toFixed(2)}
+      </strong>
+
       —
+
       <span class="status ${escapeHtml(payment.status)}">
         ${escapeHtml(payment.status)}
       </span>
+
       <br>
+
       <small>
-        ${payment.customer_email
-          ? escapeHtml(payment.customer_email)
-          : "Customer email unavailable"}
+        ${
+          payment.customer_email
+            ? escapeHtml(payment.customer_email)
+            : "Customer email unavailable"
+        }
       </small>
+
     `;
 
     list.appendChild(item);
+
   });
 }
 
+
+/* CREATE PAYMENT LINK */
+
 document
   .getElementById("linkForm")
-  .addEventListener("submit", async function(event) {
+  .addEventListener(
+    "submit",
+    async function(event) {
 
-    event.preventDefault();
+      event.preventDefault();
 
-    const title =
-      document.getElementById("title").value.trim();
+      const title =
+        document.getElementById("title")
+          .value
+          .trim();
 
-    const amount =
-      Number(document.getElementById("amount").value);
+      const amount =
+        Number(
+          document.getElementById("amount").value
+        );
 
-    const description =
-      document.getElementById("description").value.trim();
+      const description =
+        document.getElementById("description")
+          .value
+          .trim();
 
-    const slug =
-      document.getElementById("slug").value
-      .trim()
-      .toLowerCase()
-      .replace(/[^a-z0-9-]/g, "-")
-      .replace(/-+/g, "-");
+      const slug =
+        document.getElementById("slug")
+          .value
+          .trim()
+          .toLowerCase()
+          .replace(/[^a-z0-9-]/g, "-")
+          .replace(/-+/g, "-");
 
-    const message =
-      document.getElementById("formMessage");
+      const message =
+        document.getElementById("formMessage");
 
-    message.textContent = "Creating payment link...";
+      message.textContent =
+        "Creating payment link...";
 
-    const { error } = await supabaseClient
-      .from("payment_links")
-      .insert({
-        title: title,
-        amount: amount,
-        description: description,
-        user_id: currentUser.id,
-        active: true,
-        slug: slug
-      });
+      const { error } =
+        await supabaseClient
+          .from("payment_links")
+          .insert({
 
-    if (error) {
+            title: title,
+            amount: amount,
+            description: description,
+            user_id: currentUser.id,
+            active: true,
+            slug: slug
 
-      if (error.code === "23505") {
-        message.textContent =
-          "That link name already exists. Choose another.";
-      } else {
-        message.textContent =
-          "Error: " + error.message;
+          });
+
+      if (error) {
+
+        if (error.code === "23505") {
+
+          message.textContent =
+            "That link name already exists. Choose another.";
+
+        } else {
+
+          message.textContent =
+            "Error: " + error.message;
+
+        }
+
+        return;
       }
 
-      return;
+      message.textContent =
+        "Payment link created successfully!";
+
+      document
+        .getElementById("linkForm")
+        .reset();
+
+      await loadPaymentLinks();
+
     }
+  );
 
-    message.textContent =
-      "Payment link created successfully!";
 
-    document.getElementById("linkForm").reset();
-
-    await loadPaymentLinks();
-  });
+/* COPY LINK */
 
 async function copyLink(encodedUrl) {
 
-  const url = decodeURIComponent(encodedUrl);
+  const url =
+    decodeURIComponent(encodedUrl);
 
   try {
 
@@ -590,8 +705,12 @@ async function copyLink(encodedUrl) {
   } catch (error) {
 
     alert(url);
+
   }
 }
+
+
+/* DELETE LINK */
 
 async function deleteLink(id) {
 
@@ -600,11 +719,12 @@ async function deleteLink(id) {
 
   if (!confirmed) return;
 
-  const { error } = await supabaseClient
-    .from("payment_links")
-    .delete()
-    .eq("id", id)
-    .eq("user_id", currentUser.id);
+  const { error } =
+    await supabaseClient
+      .from("payment_links")
+      .delete()
+      .eq("id", id)
+      .eq("user_id", currentUser.id);
 
   if (error) {
 
@@ -618,6 +738,9 @@ async function deleteLink(id) {
   await loadPaymentLinks();
 }
 
+
+/* CREATE LINK BUTTON */
+
 function showCreateLink() {
 
   document
@@ -628,22 +751,34 @@ function showCreateLink() {
 
 }
 
+
+/* LOGOUT */
+
 async function logout() {
 
   await supabaseClient.auth.signOut();
 
-  window.location.href = "login.html";
+  window.location.href =
+    "Login.html";
 }
+
+
+/* SECURITY */
 
 function escapeHtml(value) {
 
   return String(value ?? "")
+
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+
 }
+
+
+/* START */
 
 checkUser();
 
