@@ -330,6 +330,7 @@
     </div>
 
     <label>Customer email</label>
+
     <input
       id="customerEmail"
       type="email"
@@ -342,15 +343,38 @@
     <div class="methods">
 
       <div class="method active" id="usdMethod">
-        <input type="radio" name="paymentMethod" value="USD" checked>
-        <div class="method-title">USD</div>
-        <div class="method-sub">Card Payment</div>
+        <input
+          type="radio"
+          name="paymentMethod"
+          value="USD"
+          checked
+        >
+
+        <div class="method-title">
+          USD
+        </div>
+
+        <div class="method-sub">
+          Card Payment
+        </div>
       </div>
 
       <div class="method" id="usdcMethod">
-        <input type="radio" name="paymentMethod" value="USDC">
-        <div class="method-title">USDC</div>
-        <div class="method-sub">Ethereum</div>
+
+        <input
+          type="radio"
+          name="paymentMethod"
+          value="USDC"
+        >
+
+        <div class="method-title">
+          USDC
+        </div>
+
+        <div class="method-sub">
+          Ethereum
+        </div>
+
       </div>
 
     </div>
@@ -358,7 +382,9 @@
     <!-- USD -->
     <div id="usdSection" class="section active">
 
-      <label>Cardholder name</label>
+      <label>
+        Cardholder name
+      </label>
 
       <input
         id="cardholderName"
@@ -373,27 +399,26 @@
 
     </div>
 
+
     <!-- USDC -->
     <div id="usdcSection" class="section">
 
       <div class="network">
-        Network: <strong>Ethereum / ERC-20</strong>
+        Network:
+        <strong>Ethereum / ERC-20</strong>
       </div>
 
-      <label>USDC destination address</label>
-
-      <input
-        id="usdcAddress"
-        type="text"
-        placeholder="0x..."
-        autocomplete="off"
-      >
+      <div class="network">
+        Your USDC deposit address will be provided securely by PayFlow.
+      </div>
 
       <div class="rate">
-        Sandbox conversion rate: 1 USD = 1 USDC
+        USDC deposits are currently being processed through
+        PayFlow's Ethereum deposit system.
       </div>
 
     </div>
+
 
     <button id="payButton">
       Pay Now
@@ -409,7 +434,9 @@
 
 </div>
 
+
 <script>
+
   const SUPABASE_URL =
     "https://qfmczhdnmbntjfioyzjc.supabase.co";
 
@@ -422,85 +449,150 @@
       SUPABASE_KEY
     );
 
-  const params =
-    new URLSearchParams(window.location.search);
 
-  const slug = params.get("slug");
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+  const slug =
+    params.get("slug");
+
 
   const USD_RATE = 1;
 
   let paymentLink = null;
 
+
   const paymentTitle =
-    document.getElementById("paymentTitle");
+    document.getElementById(
+      "paymentTitle"
+    );
 
   const paymentDescription =
-    document.getElementById("paymentDescription");
+    document.getElementById(
+      "paymentDescription"
+    );
 
   const paymentAmount =
-    document.getElementById("paymentAmount");
+    document.getElementById(
+      "paymentAmount"
+    );
 
   const customerEmail =
-    document.getElementById("customerEmail");
+    document.getElementById(
+      "customerEmail"
+    );
 
   const usdMethod =
-    document.getElementById("usdMethod");
+    document.getElementById(
+      "usdMethod"
+    );
 
   const usdcMethod =
-    document.getElementById("usdcMethod");
+    document.getElementById(
+      "usdcMethod"
+    );
 
   const usdSection =
-    document.getElementById("usdSection");
+    document.getElementById(
+      "usdSection"
+    );
 
   const usdcSection =
-    document.getElementById("usdcSection");
+    document.getElementById(
+      "usdcSection"
+    );
 
   const payButton =
-    document.getElementById("payButton");
+    document.getElementById(
+      "payButton"
+    );
 
   const message =
-    document.getElementById("message");
+    document.getElementById(
+      "message"
+    );
+
 
   function showMessage(text, type) {
+
     message.textContent = text;
-    message.className = "message " + type;
+
+    message.className =
+      "message " + type;
   }
 
+
   function clearMessage() {
+
     message.textContent = "";
-    message.className = "message";
+
+    message.className =
+      "message";
   }
+
 
   function setMethod(method) {
 
     clearMessage();
 
+
     if (method === "USD") {
 
-      usdMethod.classList.add("active");
-      usdcMethod.classList.remove("active");
+      usdMethod.classList.add(
+        "active"
+      );
 
-      usdSection.classList.add("active");
-      usdcSection.classList.remove("active");
+      usdcMethod.classList.remove(
+        "active"
+      );
+
+      usdSection.classList.add(
+        "active"
+      );
+
+      usdcSection.classList.remove(
+        "active"
+      );
 
     } else {
 
-      usdcMethod.classList.add("active");
-      usdMethod.classList.remove("active");
+      usdcMethod.classList.add(
+        "active"
+      );
 
-      usdcSection.classList.add("active");
-      usdSection.classList.remove("active");
+      usdMethod.classList.remove(
+        "active"
+      );
+
+      usdcSection.classList.add(
+        "active"
+      );
+
+      usdSection.classList.remove(
+        "active"
+      );
 
     }
   }
 
-  usdMethod.addEventListener("click", () => {
-    setMethod("USD");
-  });
 
-  usdcMethod.addEventListener("click", () => {
-    setMethod("USDC");
-  });
+  usdMethod.addEventListener(
+    "click",
+    () => {
+      setMethod("USD");
+    }
+  );
+
+
+  usdcMethod.addEventListener(
+    "click",
+    () => {
+      setMethod("USDC");
+    }
+  );
+
 
   async function loadPaymentLink() {
 
@@ -517,13 +609,18 @@
       return;
     }
 
-    const { data, error } =
+
+    const {
+      data,
+      error
+    } =
       await supabaseClient
         .from("payment_links")
         .select("*")
         .eq("slug", slug)
         .eq("active", true)
         .maybeSingle();
+
 
     if (error || !data) {
 
@@ -538,20 +635,29 @@
       return;
     }
 
+
     paymentLink = data;
 
+
     paymentTitle.textContent =
-      data.title || "PayFlow Payment";
+      data.title ||
+      "PayFlow Payment";
+
 
     paymentDescription.textContent =
-      data.description || "";
+      data.description ||
+      "";
+
 
     const amount =
       Number(data.amount || 0);
 
+
     paymentAmount.textContent =
-      "$" + amount.toFixed(2);
+      "$" +
+      amount.toFixed(2);
   }
+
 
   async function createPayFlowPayment({
     amount,
@@ -567,167 +673,252 @@
           method: "POST",
 
           headers: {
-            "Content-Type": "application/json",
-            "apikey": SUPABASE_KEY
+            "Content-Type":
+              "application/json",
+
+            "apikey":
+              SUPABASE_KEY
           },
 
           body: JSON.stringify({
-            amount: amount,
-            currency: currency,
-            customer_email: email,
-            payment_link_id: paymentLink.id
+
+            amount:
+              amount,
+
+            currency:
+              currency,
+
+            customer_email:
+              email,
+
+            payment_link_id:
+              paymentLink.id
+
           })
         }
       );
 
+
     const result =
       await response.json();
 
-    if (!response.ok || !result.success) {
+
+    if (
+      !response.ok ||
+      !result.success
+    ) {
+
       throw new Error(
         result.error ||
         "Unable to create payment."
       );
     }
 
+
     return result;
   }
 
-  payButton.addEventListener("click", async () => {
 
-    clearMessage();
+  payButton.addEventListener(
+    "click",
+    async () => {
 
-    if (!paymentLink) {
-      showMessage(
-        "Payment link is not available.",
-        "error"
-      );
-      return;
-    }
+      clearMessage();
 
-    const email =
-      customerEmail.value.trim();
 
-    if (!email || !email.includes("@")) {
-
-      showMessage(
-        "Please enter a valid customer email.",
-        "error"
-      );
-
-      return;
-    }
-
-    const selectedMethod =
-      document.querySelector(
-        'input[name="paymentMethod"]:checked'
-      ).value;
-
-    const amount =
-      Number(paymentLink.amount);
-
-    if (!Number.isFinite(amount) || amount <= 0) {
-
-      showMessage(
-        "Invalid payment amount.",
-        "error"
-      );
-
-      return;
-    }
-
-    payButton.disabled = true;
-    payButton.classList.add("loading");
-    payButton.textContent =
-      "Creating payment...";
-
-    try {
-
-      if (selectedMethod === "USD") {
-
-        const cardholder =
-          document.getElementById(
-            "cardholderName"
-          ).value.trim();
-
-        if (!cardholder) {
-
-          throw new Error(
-            "Please enter the cardholder name."
-          );
-        }
-
-        const result =
-          await createPayFlowPayment({
-            amount: amount,
-            currency: "USD",
-            email: email
-          });
+      if (!paymentLink) {
 
         showMessage(
-          "Payment created successfully. Payment ID: " +
-          result.payment_id +
-          " • Status: " +
-          result.status,
-          "success"
+          "Payment link is not available.",
+          "error"
         );
 
-      } else {
-
-        const destination =
-          document.getElementById(
-            "usdcAddress"
-          ).value.trim();
-
-        const ethereumAddress =
-          /^0x[a-fA-F0-9]{40}$/;
-
-        if (!ethereumAddress.test(destination)) {
-
-          throw new Error(
-            "Please enter a valid Ethereum address."
-          );
-        }
-
-        const usdcAmount =
-          amount / USD_RATE;
-
-        const result =
-          await createPayFlowPayment({
-            amount: usdcAmount,
-            currency: "USDC",
-            email: email
-          });
-
-        showMessage(
-          "USDC payment created successfully. Payment ID: " +
-          result.payment_id +
-          " • Status: " +
-          result.status,
-          "success"
-        );
+        return;
       }
 
-    } catch (error) {
 
-      console.error(error);
+      const email =
+        customerEmail.value.trim();
 
-      showMessage(
-        error.message ||
-        "Unable to create payment.",
-        "error"
+
+      if (
+        !email ||
+        !email.includes("@")
+      ) {
+
+        showMessage(
+          "Please enter a valid customer email.",
+          "error"
+        );
+
+        return;
+      }
+
+
+      const selectedMethod =
+        document.querySelector(
+          'input[name="paymentMethod"]:checked'
+        ).value;
+
+
+      const amount =
+        Number(paymentLink.amount);
+
+
+      if (
+        !Number.isFinite(amount) ||
+        amount <= 0
+      ) {
+
+        showMessage(
+          "Invalid payment amount.",
+          "error"
+        );
+
+        return;
+      }
+
+
+      payButton.disabled = true;
+
+      payButton.classList.add(
+        "loading"
       );
 
-    } finally {
+      payButton.textContent =
+        "Creating payment...";
 
-      payButton.disabled = false;
-      payButton.classList.remove("loading");
-      payButton.textContent = "Pay Now";
+
+      try {
+
+        if (
+          selectedMethod === "USD"
+        ) {
+
+          const cardholder =
+            document.getElementById(
+              "cardholderName"
+            ).value.trim();
+
+
+          if (!cardholder) {
+
+            throw new Error(
+              "Please enter the cardholder name."
+            );
+          }
+
+
+          const result =
+            await createPayFlowPayment({
+
+              amount:
+                amount,
+
+              currency:
+                "USD",
+
+              email:
+                email
+
+            });
+
+
+          showMessage(
+
+            "Payment created successfully. " +
+
+            "Payment ID: " +
+
+            result.payment_id +
+
+            " • Status: " +
+
+            result.status,
+
+            "success"
+
+          );
+
+
+        } else {
+
+          /*
+           * USDC deposit flow will be connected
+           * to the authenticated Supabase user.
+           *
+           * We are intentionally NOT accepting
+           * a wallet address from the customer.
+           *
+           * The next step will securely create
+           * a pending crypto_deposits record.
+           */
+
+
+          const {
+            data: {
+              session
+            }
+          } =
+            await supabaseClient
+              .auth
+              .getSession();
+
+
+          if (!session) {
+
+            throw new Error(
+              "Please sign in to your PayFlow account before making a USDC deposit."
+            );
+          }
+
+
+          showMessage(
+
+            "Your PayFlow session is active. USDC deposit setup is ready for the next step.",
+
+            "success"
+
+          );
+
+        }
+
+
+      } catch (error) {
+
+        console.error(error);
+
+
+        showMessage(
+
+          error.message ||
+          "Unable to create payment.",
+
+          "error"
+
+        );
+
+
+      } finally {
+
+        payButton.disabled =
+          false;
+
+        payButton.classList.remove(
+          "loading"
+        );
+
+        payButton.textContent =
+          "Pay Now";
+
+      }
+
     }
+  );
 
-  });
 
   loadPaymentLink();
+
 </script>
 
 </body>
