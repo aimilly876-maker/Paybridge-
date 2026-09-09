@@ -463,315 +463,496 @@
         <p>Payments made simple</p>
       </div>
     </div>
-<button class="logout" onclick="logout()">Log out</button>
+    <button class="logout" onclick="logout()">Log out</button>
   </header>
+
   <section class="welcome">
     <div class="eyebrow">Your financial dashboard</div>
     <h2>Welcome back</h2>
     <p>Manage your balances, payments and withdrawals from one place.</p>
   </section>
+
   <!-- BALANCES -->
   <section class="balances">
-<div class="balance-card">
-  <div class="balance-top">
-    <div class="currency">
-      <div class="currency-icon">$</div>
-      <div>
-        <div class="currency-name">US Dollar</div>
-        <div class="currency-code">USD</div>
+    <div class="balance-card">
+      <div class="balance-top">
+        <div class="currency">
+          <div class="currency-icon">$</div>
+          <div>
+            <div class="currency-name">US Dollar</div>
+            <div class="currency-code">USD</div>
+          </div>
+        </div>
+        <div class="available">Available balance</div>
       </div>
+      <div class="balance" id="usdBalance">$0.00</div>
     </div>
-    <div class="available">Available balance</div>
-  </div>
-  <div class="balance" id="usdBalance">$0.00</div>
-</div>
-<div class="balance-card usdc">
-  <div class="balance-top">
-    <div class="currency">
-      <div class="currency-icon">₮</div>
-      <div>
-        <div class="currency-name">USD Coin</div>
-        <div class="currency-code">USDC · Ethereum</div>
+
+    <div class="balance-card usdc">
+      <div class="balance-top">
+        <div class="currency">
+          <div class="currency-icon">₮</div>
+          <div>
+            <div class="currency-name">USD Coin</div>
+            <div class="currency-code">USDC · Ethereum</div>
+          </div>
+        </div>
+        <div class="available">Available balance</div>
       </div>
+      <div class="balance" id="usdcBalance">0.00 USDC</div>
     </div>
-    <div class="available">Available balance</div>
-  </div>
-  <div class="balance" id="usdcBalance">0.00 USDC</div>
-</div>
   </section>
+
   <!-- QUICK ACTIONS -->
   <div class="section-title">Quick actions</div>
+
   <section class="actions">
-<button class="action" onclick="openModal('depositModal')">
-  <div class="action-icon">↓</div>
-  <strong>Deposit</strong>
-  <span>Add funds</span>
-</button>
-<button class="action" onclick="openModal('convertModal')">
-  <div class="action-icon">⇄</div>
-  <strong>Convert</strong>
-  <span>USD ↔ USDC</span>
-</button>
-<button class="action" onclick="document.getElementById('title').focus()">
-  <div class="action-icon">⌁</div>
-  <strong>Payment Links</strong>
-  <span>Get paid online</span>
-</button>
-<button class="action" onclick="document.getElementById('withdrawAmount').focus()">
-  <div class="action-icon">↑</div>
-  <strong>Withdraw</strong>
-  <span>Send funds</span>
-</button>
+    <button class="action" onclick="openModal('depositModal')">
+      <div class="action-icon">↓</div>
+      <strong>Deposit</strong>
+      <span>Add funds</span>
+    </button>
+
+    <button class="action" onclick="openModal('convertModal')">
+      <div class="action-icon">⇄</div>
+      <strong>Convert</strong>
+      <span>USD ↔ USDC</span>
+    </button>
+
+    <button class="action" onclick="document.getElementById('title').focus()">
+      <div class="action-icon">⌁</div>
+      <strong>Payment Links</strong>
+      <span>Get paid online</span>
+    </button>
+
+    <button class="action" onclick="document.getElementById('withdrawAmount').focus()">
+      <div class="action-icon">↑</div>
+      <strong>Withdraw</strong>
+      <span>Send funds</span>
+    </button>
   </section>
+
   <!-- MAIN -->
   <section class="main-grid">
-<!-- PAYMENT LINKS -->
-<div class="panel">
-  <div class="panel-header">
-    <h3>Payment Links</h3>
-    <span>Accept payments</span>
-  </div>
-  <div class="link-form">
-    <input id="title" placeholder="Payment title" />
-    <input id="amount" type="number" step="0.01" min="0.01" placeholder="Amount in USD" />
-    <input id="description" placeholder="Description (optional)" />
-    <button class="primary" onclick="createPaymentLink()">
-      Create Payment Link
-    </button>
-  </div>
-  <div id="linkList" class="link-list">
-    <div class="empty">No payment links yet.</div>
-  </div>
-</div>
-<!-- WITHDRAW -->
-<div class="panel">
-  <div class="panel-header">
-    <h3>Withdraw</h3>
-    <span>Sandbox</span>
-  </div>
-  <div class="withdraw-form">
-    <select id="withdrawMethod">
-      <option value="crypto">USDC Crypto</option>
-    </select>
-    <select id="withdrawNetwork">
-      <option value="ethereum">Ethereum / ERC-20</option>
-    </select>
-    <input
-      id="withdrawAmount"
-      type="number"
-      min="0.01"
-      step="0.01"
-      placeholder="USDC amount"
-    />
-    <input
-      id="withdrawAddress"
-      placeholder="Ethereum destination address"
-    />
-    <div class="notice">
-      Sandbox mode is active. No real cryptocurrency will be transferred.
+
+    <!-- PAYMENT LINKS -->
+    <div class="panel">
+      <div class="panel-header">
+        <h3>Payment Links</h3>
+        <span>Accept payments</span>
+      </div>
+
+      <div class="link-form">
+        <input id="title" placeholder="Payment title" />
+        <input id="amount" type="number" step="0.01" min="0.01" placeholder="Amount in USD" />
+        <input id="description" placeholder="Description (optional)" />
+
+        <button class="primary" onclick="createPaymentLink()">
+          Create Payment Link
+        </button>
+      </div>
+
+      <div id="linkList" class="link-list">
+        <div class="empty">No payment links yet.</div>
+      </div>
     </div>
-    <button class="primary" onclick="requestWithdrawal()">
-      Request Withdrawal
-    </button>
-  </div>
-</div>
+
+    <!-- WITHDRAW -->
+    <div class="panel">
+      <div class="panel-header">
+        <h3>Withdraw</h3>
+        <span>Sandbox</span>
+      </div>
+
+      <div class="withdraw-form">
+        <select id="withdrawMethod">
+          <option value="crypto">USDC Crypto</option>
+        </select>
+
+        <select id="withdrawNetwork">
+          <option value="ethereum">Ethereum / ERC-20</option>
+        </select>
+
+        <input
+          id="withdrawAmount"
+          type="number"
+          min="0.01"
+          step="0.01"
+          placeholder="USDC amount"
+        />
+
+        <input
+          id="withdrawAddress"
+          placeholder="Ethereum destination address"
+        />
+
+        <div class="notice">
+          Sandbox mode is active. No real cryptocurrency will be transferred.
+        </div>
+
+        <button class="primary" onclick="requestWithdrawal()">
+          Request Withdrawal
+        </button>
+      </div>
+    </div>
+
   </section>
+
   <!-- TRANSACTIONS -->
   <section class="panel" style="margin-bottom:18px;">
-<div class="panel-header">
-  <h3>Recent Transactions</h3>
-  <span>Latest activity</span>
-</div>
-<div id="transactions">
-  <div class="empty">Loading transactions...</div>
-</div>
+    <div class="panel-header">
+      <h3>Recent Transactions</h3>
+      <span>Latest activity</span>
+    </div>
+
+    <div id="transactions">
+      <div class="empty">Loading transactions...</div>
+    </div>
   </section>
+
   <!-- WITHDRAWAL HISTORY -->
   <section class="panel">
-<div class="panel-header">
-  <h3>Withdrawal History</h3>
-  <span>Recent withdrawals</span>
-</div>
-<div id="withdrawalHistory">
-  <div class="empty">Loading withdrawals...</div>
-</div>
+    <div class="panel-header">
+      <h3>Withdrawal History</h3>
+      <span>Recent withdrawals</span>
+    </div>
+
+    <div id="withdrawalHistory">
+      <div class="empty">Loading withdrawals...</div>
+    </div>
   </section>
+
 </div>
+
 <!-- DEPOSIT MODAL -->
 <div class="modal" id="depositModal">
   <div class="modal-box">
-<button class="close" onclick="closeModal('depositModal')">×</button>
-<h3>Deposit Funds</h3>
-<p>
-  Choose how you want to add funds to your PayFlow account.
-  Real deposits will be enabled when the payment provider integration is connected.
-</p>
-<button class="primary" style="margin-bottom:10px;" onclick="depositCrypto()">
-  Deposit Crypto
-</button>
-<button class="primary" onclick="depositCard()">
-  Deposit with Debit/Credit Card
-</button>
+
+    <button class="close" onclick="closeModal('depositModal')">×</button>
+
+    <h3>Deposit Funds</h3>
+
+    <p>
+      Choose how you want to add funds to your PayFlow account.
+      Real deposits will be enabled when the payment provider integration is connected.
+    </p>
+
+    <button class="primary" style="margin-bottom:10px;" onclick="depositCrypto()">
+      Deposit Crypto
+    </button>
+
+    <button class="primary" onclick="depositCard()">
+      Deposit with Debit/Credit Card
+    </button>
+
   </div>
 </div>
+
 <!-- CONVERT MODAL -->
 <div class="modal" id="convertModal">
   <div class="modal-box">
-<button class="close" onclick="closeModal('convertModal')">×</button>
-<h3>Convert USD ↔ USDC</h3>
-<p>
-  Sandbox conversion is currently enabled at a test rate of
-  1 USD = 1 USDC.
-</p>
-<select id="convertDirection" style="margin-bottom:10px;">
-  <option value="usd_usdc">USD → USDC</option>
-  <option value="usdc_usd">USDC → USD</option>
-</select>
-<input
-  id="convertAmount"
-  type="number"
-  min="0.01"
-  step="0.01"
-  placeholder="Amount"
-  style="margin-bottom:10px;"
-/>
-<button class="primary" onclick="convertFunds()">
-  Convert
-</button>
+
+    <button class="close" onclick="closeModal('convertModal')">×</button>
+
+    <h3>Convert USD ↔ USDC</h3>
+
+    <p>
+      Sandbox conversion is currently enabled at a test rate of
+      1 USD = 1 USDC.
+    </p>
+
+    <select id="convertDirection" style="margin-bottom:10px;">
+      <option value="usd_usdc">USD → USDC</option>
+      <option value="usdc_usd">USDC → USD</option>
+    </select>
+
+    <input
+      id="convertAmount"
+      type="number"
+      min="0.01"
+      step="0.01"
+      placeholder="Amount"
+      style="margin-bottom:10px;"
+    />
+
+    <button class="primary" onclick="convertFunds()">
+      Convert
+    </button>
+
   </div>
 </div>
+
 <script>
-  const SUPABASE_URL = "https://qfmczhdnmbntjfioyzjc.supabase.co";
+
+  const SUPABASE_URL =
+    "https://qfmczhdnmbntjfioyzjc.supabase.co";
+
   const SUPABASE_KEY =
     "sb_publishable_vyPMYAngU34c2YHkTjt_ZA_MVet1HmZ";
-  const supabaseClient = supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+
+  const supabaseClient =
+    supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
   let currentUser = null;
   let currentWalletUSD = null;
   let currentWalletUSDC = null;
+
+
   /* AUTH */
+
   async function checkAuth() {
+
     const {
       data: { session }
-    } = await supabaseClient.auth.getSession();
+    } =
+      await supabaseClient.auth.getSession();
+
     if (!session) {
-      window.location.href = "Login.html";
+
+      window.location.href =
+        "Login.html";
+
       return;
     }
-    currentUser = session.user;
+
+    currentUser =
+      session.user;
+
     await loadDashboard();
   }
+
+
   async function logout() {
+
     await supabaseClient.auth.signOut();
-    window.location.href = "Login.html";
+
+    window.location.href =
+      "Login.html";
   }
+
+
   /* DASHBOARD */
+
   async function loadDashboard() {
+
     await loadWallets();
+
     await loadPaymentLinks();
+
     await loadTransactions();
+
     await loadWithdrawals();
   }
+
+
   /* WALLETS */
+
   async function loadWallets() {
+
     const {
       data,
       error
-    } = await supabaseClient
-      .from("wallets")
-      .select("*")
-      .eq("user_id", currentUser.id);
+    } =
+      await supabaseClient
+        .from("wallets")
+        .select("*")
+        .eq(
+          "user_id",
+          currentUser.id
+        );
+
     if (error) {
+
       console.error(error);
+
       return;
     }
+
     currentWalletUSD =
-      data.find(w => w.currency === "USD") || null;
+      data.find(
+        w => w.currency === "USD"
+      ) || null;
+
     currentWalletUSDC =
-      data.find(w => w.currency === "USDC") || null;
-    document.getElementById("usdBalance").textContent =
-      "$" + Number(currentWalletUSD?.available_balance || 0).toFixed(2);
-    document.getElementById("usdcBalance").textContent =
-      Number(currentWalletUSDC?.available_balance || 0).toFixed(2) +
+      data.find(
+        w => w.currency === "USDC"
+      ) || null;
+
+    document.getElementById(
+      "usdBalance"
+    ).textContent =
+      "$" +
+      Number(
+        currentWalletUSD?.available_balance || 0
+      ).toFixed(2);
+
+    document.getElementById(
+      "usdcBalance"
+    ).textContent =
+      Number(
+        currentWalletUSDC?.available_balance || 0
+      ).toFixed(2) +
       " USDC";
   }
+
+
   /* PAYMENT LINKS */
+
   async function createPaymentLink() {
+
     const title =
-      document.getElementById("title").value.trim();
+      document
+        .getElementById("title")
+        .value
+        .trim();
+
     const amount =
-      Number(document.getElementById("amount").value);
+      Number(
+        document
+          .getElementById("amount")
+          .value
+      );
+
     const description =
-      document.getElementById("description").value.trim();
+      document
+        .getElementById("description")
+        .value
+        .trim();
+
     if (!title) {
-      alert("Enter a payment title.");
+
+      alert(
+        "Enter a payment title."
+      );
+
       return;
     }
+
     if (!amount || amount <= 0) {
-      alert("Enter a valid amount.");
+
+      alert(
+        "Enter a valid amount."
+      );
+
       return;
     }
+
     const slug =
       title
         .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-|-$/g, "") +
+        .replace(
+          /[^a-z0-9]+/g,
+          "-"
+        )
+        .replace(
+          /^-|-$/g,
+          ""
+        ) +
       "-" +
-      Math.random().toString(36).substring(2, 8);
+      Math.random()
+        .toString(36)
+        .substring(2, 8);
+
     const {
       data,
       error
-    } = await supabaseClient
-      .from("payment_links")
-      .insert({
-        title: title,
-        amount: amount,
-        description: description,
-        user_id: currentUser.id,
-        active: true,
-        slug: slug
-      })
-      .select()
-      .single();
+    } =
+      await supabaseClient
+        .from("payment_links")
+        .insert({
+          title: title,
+          amount: amount,
+          description: description,
+          user_id: currentUser.id,
+          active: true,
+          slug: slug
+        })
+        .select()
+        .single();
+
     if (error) {
+
       console.error(error);
+
       alert(
         "Could not create payment link: " +
         error.message
       );
+
       return;
     }
-    document.getElementById("title").value = "";
-    document.getElementById("amount").value = "";
-    document.getElementById("description").value = "";
+
+    document.getElementById(
+      "title"
+    ).value = "";
+
+    document.getElementById(
+      "amount"
+    ).value = "";
+
+    document.getElementById(
+      "description"
+    ).value = "";
+
     await loadPaymentLinks();
-    alert("Payment link created successfully.");
+
+    alert(
+      "Payment link created successfully."
+    );
   }
+
+
   async function loadPaymentLinks() {
+
     const {
       data,
       error
-    } = await supabaseClient
-      .from("payment_links")
-      .select("*")
-      .eq("user_id", currentUser.id)
-      .order("created_at", { ascending: false });
+    } =
+      await supabaseClient
+        .from("payment_links")
+        .select("*")
+        .eq(
+          "user_id",
+          currentUser.id
+        )
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        );
+
     const list =
-      document.getElementById("linkList");
+      document.getElementById(
+        "linkList"
+      );
+
     if (error) {
+
       list.innerHTML =
         '<div class="empty">Unable to load payment links.</div>';
+
       return;
     }
-    if (!data || data.length === 0) {
+
+    if (
+      !data ||
+      data.length === 0
+    ) {
+
       list.innerHTML =
         '<div class="empty">No payment links yet.</div>';
+
       return;
     }
+
     list.innerHTML = "";
+
     data.forEach(link => {
+
       const url =
         window.location.origin +
         window.location.pathname.replace(
@@ -779,232 +960,492 @@
           "pay.html"
         ) +
         "?slug=" +
-        encodeURIComponent(link.slug);
+        encodeURIComponent(
+          link.slug
+        );
+
       const item =
-        document.createElement("div");
-      item.className = "link-item";
+        document.createElement(
+          "div"
+        );
+
+      item.className =
+        "link-item";
+
       item.innerHTML = `
         <div>
           <strong>${escapeHtml(link.title)}</strong>
           <small>$${Number(link.amount).toFixed(2)} USD</small>
         </div>
+
         <button class="copy"
           onclick="copyLink('${encodeURIComponent(url)}')">
           Copy
         </button>
       `;
+
       list.appendChild(item);
     });
   }
-  async function copyLink(encodedUrl) {
-    const url = decodeURIComponent(encodedUrl);
+
+
+  async function copyLink(
+    encodedUrl
+  ) {
+
+    const url =
+      decodeURIComponent(
+        encodedUrl
+      );
+
     try {
-      await navigator.clipboard.writeText(url);
-      alert("Payment link copied.");
+
+      await navigator.clipboard.writeText(
+        url
+      );
+
+      alert(
+        "Payment link copied."
+      );
+
     } catch {
-      prompt("Copy this payment link:", url);
+
+      prompt(
+        "Copy this payment link:",
+        url
+      );
     }
   }
+
+
   /* WITHDRAWAL */
+
   async function requestWithdrawal() {
+
     if (!currentWalletUSDC) {
-      alert("USDC wallet not found.");
+
+      alert(
+        "USDC wallet not found."
+      );
+
       return;
     }
+
     const amount =
       Number(
-        document.getElementById("withdrawAmount").value
+        document
+          .getElementById(
+            "withdrawAmount"
+          )
+          .value
       );
+
     const destination =
       document
-        .getElementById("withdrawAddress")
+        .getElementById(
+          "withdrawAddress"
+        )
         .value
         .trim();
+
     const network =
-      document.getElementById("withdrawNetwork").value;
+      document
+        .getElementById(
+          "withdrawNetwork"
+        )
+        .value;
+
     if (!amount || amount <= 0) {
-      alert("Enter a valid amount.");
+
+      alert(
+        "Enter a valid amount."
+      );
+
       return;
     }
+
     if (
       amount >
-      Number(currentWalletUSDC.available_balance || 0)
+      Number(
+        currentWalletUSDC
+          .available_balance || 0
+      )
     ) {
-      alert("Insufficient available USDC balance.");
+
+      alert(
+        "Insufficient available USDC balance."
+      );
+
       return;
     }
+
     if (
-      !/^0x[a-fA-F0-9]{40}$/.test(destination)
+      !/^0x[a-fA-F0-9]{40}$/.test(
+        destination
+      )
     ) {
-      alert("Enter a valid Ethereum address.");
+
+      alert(
+        "Enter a valid Ethereum address."
+      );
+
       return;
     }
+
     const {
       data,
       error
-    } = await supabaseClient.rpc(
-      "request_withdrawal",
-      {
-        p_wallet_id: currentWalletUSDC.id,
-        p_amount: amount,
-        p_method: "crypto",
-        p_currency: "USDC",
-        p_destination_address: destination,
-        p_network: network
-      }
-    );
+    } =
+      await supabaseClient.rpc(
+        "request_withdrawal",
+        {
+          p_wallet_id:
+            currentWalletUSDC.id,
+
+          p_amount:
+            amount,
+
+          p_method:
+            "crypto",
+
+          p_currency:
+            "USDC",
+
+          p_destination_address:
+            destination,
+
+          p_network:
+            network
+        }
+      );
+
     if (error) {
+
       console.error(error);
+
       alert(
         "Withdrawal failed: " +
         error.message
       );
+
       return;
     }
-    document.getElementById("withdrawAmount").value = "";
-    document.getElementById("withdrawAddress").value = "";
+
+    document.getElementById(
+      "withdrawAmount"
+    ).value = "";
+
+    document.getElementById(
+      "withdrawAddress"
+    ).value = "";
+
     await loadDashboard();
+
     alert(
       "USDC withdrawal request created successfully."
     );
   }
+
+
   /* TRANSACTIONS */
+
   async function loadTransactions() {
+
     const container =
-      document.getElementById("transactions");
+      document.getElementById(
+        "transactions"
+      );
+
     const {
       data,
       error
-    } = await supabaseClient
-      .from("wallet_transactions")
-      .select("*")
-      .eq("user_id", currentUser.id)
-      .order("created_at", { ascending: false })
-      .limit(8);
+    } =
+      await supabaseClient
+        .from(
+          "wallet_transactions"
+        )
+        .select("*")
+        .eq(
+          "user_id",
+          currentUser.id
+        )
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        )
+        .limit(8);
+
     if (error) {
+
       container.innerHTML =
         '<div class="empty">Unable to load transactions.</div>';
+
       return;
     }
-    if (!data || data.length === 0) {
+
+    if (
+      !data ||
+      data.length === 0
+    ) {
+
       container.innerHTML =
         '<div class="empty">No recent transactions.</div>';
+
       return;
     }
+
     container.innerHTML = "";
+
     data.forEach(tx => {
+
       const div =
-        document.createElement("div");
-      div.className = "transaction";
+        document.createElement(
+          "div"
+        );
+
+      div.className =
+        "transaction";
+
       const symbol =
         tx.currency === "USDC"
           ? "₮"
           : "$";
+
       div.innerHTML = `
         <div class="transaction-left">
+
           <div class="transaction-icon">
             ${symbol}
           </div>
+
           <div>
-            <strong>${escapeHtml(tx.type || "Transaction")}</strong>
+
+            <strong>
+              ${escapeHtml(
+                tx.type ||
+                "Transaction"
+              )}
+            </strong>
+
             <small>
-              ${escapeHtml(tx.description || "Wallet activity")}
+              ${escapeHtml(
+                tx.description ||
+                "Wallet activity"
+              )}
             </small>
+
           </div>
+
         </div>
+
         <div>
+
           <div class="amount">
-            ${Number(tx.amount || 0).toFixed(2)}
-            ${escapeHtml(tx.currency || "")}
+
+            ${Number(
+              tx.amount || 0
+            ).toFixed(2)}
+
+            ${escapeHtml(
+              tx.currency || ""
+            )}
+
           </div>
+
           <div class="status">
-            ${escapeHtml(tx.status || "pending")}
+
+            ${escapeHtml(
+              tx.status ||
+              "pending"
+            )}
+
           </div>
+
         </div>
       `;
-      container.appendChild(div);
+
+      container.appendChild(
+        div
+      );
     });
   }
+
+
   /* WITHDRAWAL HISTORY */
+
   async function loadWithdrawals() {
+
     const container =
-      document.getElementById("withdrawalHistory");
+      document.getElementById(
+        "withdrawalHistory"
+      );
+
     const {
       data,
       error
-    } = await supabaseClient
-      .from("withdrawals")
-      .select("*")
-      .eq("user_id", currentUser.id)
-      .order("created_at", { ascending: false })
-      .limit(8);
+    } =
+      await supabaseClient
+        .from("withdrawals")
+        .select("*")
+        .eq(
+          "user_id",
+          currentUser.id
+        )
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        )
+        .limit(8);
+
     if (error) {
+
       container.innerHTML =
         '<div class="empty">Unable to load withdrawal history.</div>';
+
       return;
     }
-    if (!data || data.length === 0) {
+
+    if (
+      !data ||
+      data.length === 0
+    ) {
+
       container.innerHTML =
         '<div class="empty">No withdrawals yet.</div>';
+
       return;
     }
+
     container.innerHTML = "";
+
     data.forEach(w => {
+
       const div =
-        document.createElement("div");
-      div.className = "transaction";
+        document.createElement(
+          "div"
+        );
+
+      div.className =
+        "transaction";
+
       div.innerHTML = `
         <div class="transaction-left">
-          <div class="transaction-icon">↑</div>
+
+          <div class="transaction-icon">
+            ↑
+          </div>
+
           <div>
-            <strong>USDC Withdrawal</strong>
+
+            <strong>
+              USDC Withdrawal
+            </strong>
+
             <small>
-              ${escapeHtml(w.network || "Ethereum")}
+              ${escapeHtml(
+                w.network ||
+                "Ethereum"
+              )}
             </small>
+
           </div>
+
         </div>
+
         <div>
+
           <div class="amount">
-            ${Number(w.amount || 0).toFixed(2)}
-            ${escapeHtml(w.currency || "USDC")}
+
+            ${Number(
+              w.amount || 0
+            ).toFixed(2)}
+
+            ${escapeHtml(
+              w.currency ||
+              "USDC"
+            )}
+
           </div>
+
           <div class="status">
-            ${escapeHtml(w.status || "pending")}
+
+            ${escapeHtml(
+              w.status ||
+              "pending"
+            )}
+
           </div>
+
         </div>
       `;
-      container.appendChild(div);
+
+      container.appendChild(
+        div
+      );
     });
   }
+
+
   /* MODALS */
+
   function openModal(id) {
-    document.getElementById(id).style.display =
-      "flex";
-  }
-  function closeModal(id) {
-    document.getElementById(id).style.display =
-      "none";
+
+    document.getElementById(
+      id
+    ).style.display = "flex";
   }
 
+
+  function closeModal(id) {
+
+    document.getElementById(
+      id
+    ).style.display = "none";
+  }
+
+
   /* DEPOSIT */
+
+  /*
+    REAL USDC DEPOSIT REQUEST
+    Network: Ethereum / ERC-20
+
+    This creates a pending deposit record.
+    It does NOT credit the wallet yet.
+    The wallet will only be credited after
+    the Ethereum transaction is verified.
+  */
 
   async function depositCrypto() {
 
     const amount =
       Number(
-        prompt("Enter USDC deposit amount:")
+        prompt(
+          "Enter USDC deposit amount:"
+        )
       );
 
-    if (!amount || amount <= 0) {
+    if (
+      !amount ||
+      amount <= 0
+    ) {
 
-      alert("Enter a valid deposit amount.");
+      alert(
+        "Enter a valid deposit amount."
+      );
 
       return;
     }
 
     if (!currentUser) {
 
-      alert("You must be logged in to deposit funds.");
+      alert(
+        "You must be logged in to deposit funds."
+      );
 
       return;
     }
@@ -1012,70 +1453,95 @@
     const {
       data,
       error
-    } = await supabaseClient.functions.invoke(
-      "deposit-funds",
-      {
-        body: {
-          user_id: currentUser.id,
-          currency: "USDC",
-          amount: amount,
-          method: "crypto"
+    } =
+      await supabaseClient.functions.invoke(
+        "create-usdc-deposit",
+        {
+          body: {
+            amount: amount
+          }
         }
-      }
-    );
+      );
 
     if (error) {
 
       console.error(error);
 
       alert(
-        "Crypto deposit failed: " +
+        "USDC deposit request failed: " +
         error.message
       );
 
       return;
     }
 
-    if (!data || data.success !== true) {
+    if (
+      !data ||
+      data.success !== true
+    ) {
 
-      console.error("Deposit response:", data);
+      console.error(
+        "USDC deposit response:",
+        data
+      );
 
       alert(
         data?.message ||
         data?.Mensaje ||
-        "Crypto deposit failed."
+        "USDC deposit request failed."
       );
 
       return;
     }
 
-    closeModal("depositModal");
-
-    await loadDashboard();
+    closeModal(
+      "depositModal"
+    );
 
     alert(
-      `${amount.toFixed(2)} USDC deposited successfully.`
+      "USDC deposit request created successfully.\n\n" +
+      "Network: Ethereum (ERC-20)\n" +
+      "Amount: " +
+      amount.toFixed(2) +
+      " USDC\n\n" +
+      "Send the USDC to:\n" +
+      data.receiving_address
     );
   }
 
+
+  /*
+    CARD DEPOSIT
+    Still uses the working TEST/SANDBOX
+    deposit function for now.
+  */
 
   async function depositCard() {
 
     const amount =
       Number(
-        prompt("Enter USD deposit amount:")
+        prompt(
+          "Enter USD deposit amount:"
+        )
       );
 
-    if (!amount || amount <= 0) {
+    if (
+      !amount ||
+      amount <= 0
+    ) {
 
-      alert("Enter a valid deposit amount.");
+      alert(
+        "Enter a valid deposit amount."
+      );
 
       return;
     }
 
     if (!currentUser) {
 
-      alert("You must be logged in to deposit funds.");
+      alert(
+        "You must be logged in to deposit funds."
+      );
 
       return;
     }
@@ -1083,17 +1549,25 @@
     const {
       data,
       error
-    } = await supabaseClient.functions.invoke(
-      "deposit-funds",
-      {
-        body: {
-          user_id: currentUser.id,
-          currency: "USD",
-          amount: amount,
-          method: "card"
+    } =
+      await supabaseClient.functions.invoke(
+        "deposit-funds",
+        {
+          body: {
+            user_id:
+              currentUser.id,
+
+            currency:
+              "USD",
+
+            amount:
+              amount,
+
+            method:
+              "card"
+          }
         }
-      }
-    );
+      );
 
     if (error) {
 
@@ -1107,9 +1581,15 @@
       return;
     }
 
-    if (!data || data.success !== true) {
+    if (
+      !data ||
+      data.success !== true
+    ) {
 
-      console.error("Deposit response:", data);
+      console.error(
+        "Deposit response:",
+        data
+      );
 
       alert(
         data?.message ||
@@ -1120,73 +1600,135 @@
       return;
     }
 
-    closeModal("depositModal");
+    closeModal(
+      "depositModal"
+    );
 
     await loadDashboard();
 
     alert(
-      `$${amount.toFixed(2)} USD deposited successfully.`
+      "$" +
+      amount.toFixed(2) +
+      " USD deposited successfully."
     );
   }
 
+
   /* CONVERT */
+
   async function convertFunds() {
+
     const amount =
       Number(
-        document.getElementById("convertAmount").value
+        document
+          .getElementById(
+            "convertAmount"
+          )
+          .value
       );
+
     const direction =
-      document.getElementById("convertDirection").value;
-    if (!amount || amount <= 0) {
-      alert("Enter a valid amount.");
+      document
+        .getElementById(
+          "convertDirection"
+        )
+        .value;
+
+    if (
+      !amount ||
+      amount <= 0
+    ) {
+
+      alert(
+        "Enter a valid amount."
+      );
+
       return;
     }
+
     if (!currentUser) {
-      alert("You must be logged in to convert funds.");
+
+      alert(
+        "You must be logged in to convert funds."
+      );
+
       return;
     }
+
     const fromCurrency =
       direction === "usd_usdc"
         ? "USD"
         : "USDC";
+
     const toCurrency =
       direction === "usd_usdc"
         ? "USDC"
         : "USD";
+
     const {
       data,
       error
-    } = await supabaseClient.functions.invoke(
-      "convert-currency",
-      {
-        body: {
-          user_id: currentUser.id,
-          from_currency: fromCurrency,
-          to_currency: toCurrency,
-          amount: amount
+    } =
+      await supabaseClient.functions.invoke(
+        "convert-currency",
+        {
+          body: {
+            user_id:
+              currentUser.id,
+
+            from_currency:
+              fromCurrency,
+
+            to_currency:
+              toCurrency,
+
+            amount:
+              amount
+          }
         }
-      }
-    );
+      );
+
     if (error) {
+
       console.error(error);
+
       alert(
         "Conversion failed: " +
         error.message
       );
+
       return;
     }
-    if (!data || data.success !== true) {
-      console.error("Conversion response:", data);
+
+    if (
+      !data ||
+      data.success !== true
+    ) {
+
+      console.error(
+        "Conversion response:",
+        data
+      );
+
       alert(
         data?.message ||
         data?.Mensaje ||
         "Conversion failed."
       );
+
       return;
     }
-    document.getElementById("convertAmount").value = "";
-    closeModal("convertModal");
+
+    document.getElementById(
+      "convertAmount"
+    ).value = "";
+
+    closeModal(
+      "convertModal"
+    );
+
     await loadDashboard();
+
     alert(
       direction === "usd_usdc"
         ? `${amount.toFixed(2)} USD → ${amount.toFixed(2)} USDC converted successfully.`
@@ -1194,18 +1736,42 @@
     );
   }
 
+
   /* SECURITY */
+
   function escapeHtml(value) {
-    return String(value ?? "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+
+    return String(
+      value ?? ""
+    )
+      .replace(
+        /&/g,
+        "&amp;"
+      )
+      .replace(
+        /</g,
+        "&lt;"
+      )
+      .replace(
+        />/g,
+        "&gt;"
+      )
+      .replace(
+        /"/g,
+        "&quot;"
+      )
+      .replace(
+        /'/g,
+        "&#039;"
+      );
   }
 
+
   /* START */
+
   checkAuth();
+
 </script>
+
 </body>
 </html>
