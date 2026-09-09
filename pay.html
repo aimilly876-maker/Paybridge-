@@ -207,6 +207,24 @@
       line-height: 1.5;
     }
 
+    .transaction-box {
+      display: none;
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+
+    .transaction-box.active {
+      display: block;
+    }
+
+    .transaction-help {
+      color: #8290a9;
+      font-size: 12px;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
     button {
       width: 100%;
       border: 0;
@@ -227,6 +245,12 @@
     button:disabled {
       opacity: .55;
       cursor: not-allowed;
+    }
+
+    .secondary-button {
+      margin-top: 10px;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.10);
     }
 
     .message {
@@ -311,7 +335,6 @@
         role="button"
         tabindex="0"
       >
-
         <input
           id="usdRadio"
           type="radio"
@@ -327,7 +350,6 @@
         <div class="method-sub">
           Card Payment
         </div>
-
       </div>
 
       <div
@@ -336,7 +358,6 @@
         role="button"
         tabindex="0"
       >
-
         <input
           id="usdcRadio"
           type="radio"
@@ -351,7 +372,6 @@
         <div class="method-sub">
           Ethereum
         </div>
-
       </div>
 
     </div>
@@ -393,8 +413,8 @@
 
       <div class="rate">
         PayFlow will create a pending USDC deposit associated with
-        this payment request. You will receive the PayFlow receiving
-        address after the deposit is created.
+        this payment request. After sending USDC, enter the Ethereum
+        transaction hash below so PayFlow can verify the payment.
       </div>
 
     </div>
@@ -402,6 +422,47 @@
     <button id="payButton" type="button">
       Pay Now
     </button>
+
+    <!-- Transaction verification -->
+
+    <div
+      id="transactionBox"
+      class="transaction-box"
+    >
+
+      <label for="transactionHash">
+        Ethereum transaction hash
+      </label>
+
+      <div class="transaction-help">
+        After sending the USDC payment to the PayFlow receiving
+        address, paste the transaction hash here.
+      </div>
+
+      <input
+        id="transactionHash"
+        type="text"
+        placeholder="0x..."
+        autocomplete="off"
+        spellcheck="false"
+      >
+
+      <button
+        id="verifyButton"
+        type="button"
+      >
+        Verify USDC Payment
+      </button>
+
+      <button
+        id="newDepositButton"
+        type="button"
+        class="secondary-button"
+      >
+        Create New Deposit
+      </button>
+
+    </div>
 
     <div id="message" class="message"></div>
 
@@ -439,6 +500,7 @@
 
   let paymentLink = null;
   let selectedMethod = "USD";
+  let currentDepositId = null;
 
 
   const paymentTitle =
@@ -477,6 +539,18 @@
   const payButton =
     document.getElementById("payButton");
 
+  const verifyButton =
+    document.getElementById("verifyButton");
+
+  const newDepositButton =
+    document.getElementById("newDepositButton");
+
+  const transactionBox =
+    document.getElementById("transactionBox");
+
+  const transactionHash =
+    document.getElementById("transactionHash");
+
   const message =
     document.getElementById("message");
 
@@ -504,6 +578,10 @@
     selectedMethod = method;
 
     clearMessage();
+
+    transactionBox.classList.remove("active");
+    currentDepositId = null;
+    transactionHash.value = "";
 
     if (method === "USDC") {
 
@@ -800,12 +878,10 @@
 
 
     /*
-      FIX:
-      The database function requires both:
-      p_payment_link_id
-      p_customer_email
+      FIXED RPC CALL
 
-      Nothing else in the payment flow is changed.
+      Uses the existing paymentLink.id
+      and the customer's email.
     */
 
     const {
@@ -852,6 +928,76 @@
   }
 
 
+  async function verifyUSDCDeposit() {
+
+    if (!currentDepositId) {
+
+      throw new Error(
+        "No active USDC deposit was found."
+      );
+    }
+
+
+    const hash =
+      transactionHash.value.trim();
+
+
+    if (
+      !/^0x[a-fA-F0-9]{64}$/.test(hash)
+    ) {
+
+      throw new Error(
+        "Please enter a valid Ethereum transaction hash."
+      );
+    }
+
+
+    const response =
+      await fetch(
+        SUPABASE_URL +
+        "/functions/v1/process-usdc-deposit",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json",
+
+            "apikey":
+              SUPABASE_KEY
+          },
+
+          body: JSON.stringify({
+
+            depositId:
+              currentDepositId,
+
+            transactionHash:
+              hash
+
+          })
+        }
+      );
+
+
+    const result =
+      await response.json();
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        result.error ||
+        result.message ||
+        "Unable to verify USDC payment."
+      );
+    }
+
+
+    return result;
+  }
+
+
   payButton.addEventListener(
     "click",
     async function() {
@@ -870,41 +1016,23 @@
       }
 
 
-      if (
-        selectedMethod !== "USD" &&
-        selectedMethod !== "USDC"
-      ) {
-
-        showMessage(
-          "Please select a payment method.",
-          "error"
-        );
-
-        return;
-      }
-
-
       payButton.disabled = true;
-
-
-      if (selectedMethod === "USDC") {
-
-        payButton.textContent =
-          "Creating USDC Deposit...";
-
-      } else {
-
-        payButton.textContent =
-          "Creating Payment...";
-      }
 
 
       try {
 
         if (selectedMethod === "USDC") {
 
+          payButton.textContent =
+            "Creating USDC Deposit...";
+
+
           const result =
             await createUSDCDeposit();
+
+
+          currentDepositId =
+            result.deposit_id;
 
 
           showMessage(
@@ -936,15 +1064,28 @@
 
             "Status: " +
 
-            result.status,
+            result.status +
+
+            "\n\n" +
+
+            "Send the USDC to the receiving address above, " +
+            "then enter the Ethereum transaction hash below.",
 
             "success"
           );
 
 
-        } else if (
-          selectedMethod === "USD"
-        ) {
+          transactionBox.classList.add("active");
+
+          payButton.textContent =
+            "USDC Deposit Created";
+
+
+        } else {
+
+          payButton.textContent =
+            "Creating Payment...";
+
 
           const result =
             await createUSDPayment();
@@ -963,7 +1104,6 @@
             result.status,
 
             "success"
-
           );
         }
 
@@ -982,7 +1122,6 @@
           "Unable to create payment.",
 
           "error"
-
         );
 
 
@@ -993,8 +1132,16 @@
 
         if (selectedMethod === "USDC") {
 
-          payButton.textContent =
-            "Create USDC Deposit";
+          if (!currentDepositId) {
+
+            payButton.textContent =
+              "Create USDC Deposit";
+
+          } else {
+
+            payButton.textContent =
+              "USDC Deposit Created";
+          }
 
         } else {
 
@@ -1005,6 +1152,152 @@
 
     }
   );
+
+
+  verifyButton.addEventListener(
+    "click",
+    async function() {
+
+      clearMessage();
+
+      verifyButton.disabled = true;
+
+      verifyButton.textContent =
+        "Verifying Transaction...";
+
+
+      try {
+
+        const result =
+          await verifyUSDCDeposit();
+
+
+        if (
+          result.success === true &&
+          result.status === "confirmed"
+        ) {
+
+          showMessage(
+
+            "USDC payment verified successfully!\n\n" +
+
+            "Amount received: " +
+
+            (
+              result.received_amount_usdc ||
+              Number(
+                result.received_amount || 0
+              ).toFixed(6)
+            ) +
+
+            " USDC\n\n" +
+
+            "Network: Ethereum\n\n" +
+
+            "Transaction:\n" +
+
+            (
+              result.transaction_hash ||
+              transactionHash.value.trim()
+            ) +
+
+            "\n\n" +
+
+            "Status: CONFIRMED",
+
+            "success"
+          );
+
+
+          verifyButton.disabled = true;
+
+          verifyButton.textContent =
+            "Payment Confirmed";
+
+
+          transactionHash.disabled = true;
+
+          newDepositButton.style.display =
+            "block";
+
+        } else {
+
+          showMessage(
+
+            result.message ||
+            result.error ||
+            "The payment could not be confirmed yet.",
+
+            "error"
+          );
+
+          verifyButton.disabled = false;
+
+          verifyButton.textContent =
+            "Verify USDC Payment";
+        }
+
+
+      } catch (error) {
+
+        console.error(
+          "Verification error:",
+          error
+        );
+
+
+        showMessage(
+
+          error.message ||
+          "Unable to verify the USDC payment.",
+
+          "error"
+        );
+
+
+        verifyButton.disabled = false;
+
+        verifyButton.textContent =
+          "Verify USDC Payment";
+      }
+
+    }
+  );
+
+
+  newDepositButton.addEventListener(
+    "click",
+    function() {
+
+      currentDepositId = null;
+
+      transactionHash.value = "";
+
+      transactionHash.disabled = false;
+
+      transactionBox.classList.remove("active");
+
+      newDepositButton.style.display =
+        "none";
+
+      verifyButton.disabled = false;
+
+      verifyButton.textContent =
+        "Verify USDC Payment";
+
+      clearMessage();
+
+      if (selectedMethod === "USDC") {
+
+        payButton.textContent =
+          "Create USDC Deposit";
+      }
+    }
+  );
+
+
+  newDepositButton.style.display =
+    "none";
 
 
   setMethod("USD");
