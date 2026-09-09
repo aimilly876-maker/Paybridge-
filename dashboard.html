@@ -985,18 +985,150 @@
     document.getElementById(id).style.display =
       "none";
   }
-  function depositCrypto() {
+
+  /* DEPOSIT */
+
+  async function depositCrypto() {
+
+    const amount =
+      Number(
+        prompt("Enter USDC deposit amount:")
+      );
+
+    if (!amount || amount <= 0) {
+
+      alert("Enter a valid deposit amount.");
+
+      return;
+    }
+
+    if (!currentUser) {
+
+      alert("You must be logged in to deposit funds.");
+
+      return;
+    }
+
+    const {
+      data,
+      error
+    } = await supabaseClient.functions.invoke(
+      "deposit-funds",
+      {
+        body: {
+          user_id: currentUser.id,
+          currency: "USDC",
+          amount: amount,
+          method: "crypto"
+        }
+      }
+    );
+
+    if (error) {
+
+      console.error(error);
+
+      alert(
+        "Crypto deposit failed: " +
+        error.message
+      );
+
+      return;
+    }
+
+    if (!data || data.success !== true) {
+
+      console.error("Deposit response:", data);
+
+      alert(
+        data?.message ||
+        data?.Mensaje ||
+        "Crypto deposit failed."
+      );
+
+      return;
+    }
+
     closeModal("depositModal");
+
+    await loadDashboard();
+
     alert(
-      "Crypto deposits are currently in sandbox mode. Real blockchain deposits will be connected later."
+      `${amount.toFixed(2)} USDC deposited successfully.`
     );
   }
-  function depositCard() {
+
+
+  async function depositCard() {
+
+    const amount =
+      Number(
+        prompt("Enter USD deposit amount:")
+      );
+
+    if (!amount || amount <= 0) {
+
+      alert("Enter a valid deposit amount.");
+
+      return;
+    }
+
+    if (!currentUser) {
+
+      alert("You must be logged in to deposit funds.");
+
+      return;
+    }
+
+    const {
+      data,
+      error
+    } = await supabaseClient.functions.invoke(
+      "deposit-funds",
+      {
+        body: {
+          user_id: currentUser.id,
+          currency: "USD",
+          amount: amount,
+          method: "card"
+        }
+      }
+    );
+
+    if (error) {
+
+      console.error(error);
+
+      alert(
+        "Card deposit failed: " +
+        error.message
+      );
+
+      return;
+    }
+
+    if (!data || data.success !== true) {
+
+      console.error("Deposit response:", data);
+
+      alert(
+        data?.message ||
+        data?.Mensaje ||
+        "Card deposit failed."
+      );
+
+      return;
+    }
+
     closeModal("depositModal");
+
+    await loadDashboard();
+
     alert(
-      "Card deposits are currently in sandbox mode. A real payment processor will be connected later."
+      `$${amount.toFixed(2)} USD deposited successfully.`
     );
   }
+
   /* CONVERT */
   async function convertFunds() {
     const amount =
@@ -1061,6 +1193,7 @@
         : `${amount.toFixed(2)} USDC → ${amount.toFixed(2)} USD converted successfully.`
     );
   }
+
   /* SECURITY */
   function escapeHtml(value) {
     return String(value ?? "")
@@ -1070,6 +1203,7 @@
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#039;");
   }
+
   /* START */
   checkAuth();
 </script>
